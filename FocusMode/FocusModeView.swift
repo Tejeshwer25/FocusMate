@@ -9,6 +9,8 @@ import SwiftUI
 import AVFoundation
 
 struct FocusModeView: View {
+    @Environment(\.dismiss) private var dismiss
+    
     @State var totalTime: CGFloat
     @State private var showOverlay = false
     @State private var progress: CGFloat = 0.0
@@ -17,11 +19,34 @@ struct FocusModeView: View {
     
     var body: some View {
         VStack(spacing: 25) {
+            Spacer()
+            Spacer()
+            
             Text("Focus mode active")
                 .font(.title)
             
             ProgressView(progress: $progress)
                 .frame(width: 150, height: 150)
+            
+            Spacer()
+            
+            
+            Button {
+                dismiss()
+            } label: {
+                Text("Abandon Task")
+                    .font(.headline)
+                    .padding(.horizontal, 25)
+                    .padding()
+                    .foregroundStyle(.red)
+                    .background {
+                        Capsule()
+                            .foregroundStyle(Color(uiColor: .systemGray3).opacity(0.3))
+                    }
+            }
+            
+            Spacer()
+            Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay {
@@ -40,7 +65,7 @@ struct FocusModeView: View {
                             .frame(width: 50, height: 50)
                         Text("Timer Up")
                         Button {
-                            
+                            dismiss()
                         } label: {
                             Text("Go to Home")
                         }

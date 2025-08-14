@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var showOverlay  = false
     @State private var focusTime    = "0"
-    @State private var navPath      = [String]()
+    @State private var navPath      = [NavigationViews]()
     @State private var showAlert    = false
     
     var body: some View {
@@ -26,9 +25,8 @@ struct ContentView: View {
                     .textContentType(.birthdateYear)
                 
                 Button {
-                    self.showOverlay.toggle()
                     if Int(self.focusTime) != nil {
-                        self.navPath = [NavigationViews.focusMode.rawValue]
+                        self.navPath = [.focusMode]
                     } else {
                         self.showAlert.toggle()
                     }
@@ -48,8 +46,8 @@ struct ContentView: View {
             .padding(.horizontal)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle("FocusMode")
-            .navigationDestination(for: String.self) { value in
-                if value == NavigationViews.focusMode.rawValue {
+            .navigationDestination(for: NavigationViews.self) { value in
+                if value == .focusMode {
                     if let time = Int(focusTime) {
                         let totalTime = CGFloat(time) * 60
                         FocusModeView(totalTime: totalTime)
@@ -63,7 +61,7 @@ struct ContentView: View {
                isPresented: $showAlert,
                actions: {
                     Button("Ok") {
-                        self.showOverlay.toggle()
+                        self.showAlert.toggle()
                     }
                 },
                message: {
@@ -72,7 +70,7 @@ struct ContentView: View {
     }
 }
 
-enum NavigationViews: String {
+enum NavigationViews {
     case focusMode
     case relaxMode
 }
