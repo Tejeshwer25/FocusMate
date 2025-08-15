@@ -151,7 +151,7 @@ struct ContentView: View {
         if let focusTime = Float(time) {
             let time = CGFloat(focusTime) * 60
             self.userTask = UserTaskModel(taskName: self.taskName,
-                                          type: .chores,
+                                          type: self.taskType,
                                           timeAlloted: time)
             
             if let userTask = self.userTask {
@@ -169,7 +169,7 @@ struct ContentView: View {
         if !taskName.isEmpty {
             let taskDuration = self.focusTime
             if !taskDuration.isEmpty {
-                if Float(taskDuration) != nil {
+                if let duration = Float(taskDuration), duration > 0 {
                     return true
                 } else {
                     self.alertType = .taskDurationInvalid
