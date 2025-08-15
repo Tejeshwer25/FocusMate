@@ -11,7 +11,7 @@ import AVFoundation
 struct FocusModeView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @State var totalTime: CGFloat
+    @State var userTask: UserTaskModel
     @State private var showOverlay = false
     @State private var progress: CGFloat = 0.0
     @State private var timeRemaining: CGFloat = 0.0
@@ -89,23 +89,28 @@ struct FocusModeView: View {
         .toolbarVisibility(.hidden, for: .navigationBar)
     }
     
+    /// Method to initialize state on view appearance
     func initializeTimeRemaining() {
-        self.timeRemaining = self.totalTime
+        self.timeRemaining = self.userTask.timeAlloted
     }
     
+    /// Method to update timer on each second
     func updateProgress() {
+        let timeAlloted   = self.userTask.timeAlloted
+        
         self.timeRemaining -= 1
         if self.timeRemaining >= 0 {
-            withAnimation {
-                self.progress = (self.totalTime - self.timeRemaining) / self.totalTime
-            }
+            let progress = (timeAlloted - self.timeRemaining) / timeAlloted
+            self.progress = progress
         } else {
             self.showOverlay = true
+            self.userTask.timeCompleted = self.userTask.timeAlloted
             AudioServicesPlayAlertSound(SystemSoundID(1004))
         }
     }
 }
 
 #Preview {
-    FocusModeView(totalTime: 2000)
+    let userTask = UserTaskModel(taskName: "", type: .chores, timeAlloted: 400)
+    FocusModeView(userTask: userTask)
 }
