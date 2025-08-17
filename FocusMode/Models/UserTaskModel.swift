@@ -34,7 +34,7 @@ enum TaskType: String, CaseIterable, Codable {
     }
 }
 
-struct UserTaskModel: Codable, Hashable {
+struct UserTaskModel: Codable, Hashable, Identifiable {
     let id: UUID
     let taskName: String
     let type: TaskType

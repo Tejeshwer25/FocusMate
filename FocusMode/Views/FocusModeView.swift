@@ -87,6 +87,7 @@ struct FocusModeView: View {
             self.updateProgress()
         }
         .toolbarVisibility(.hidden, for: .navigationBar)
+        .toolbarVisibility(.hidden, for: .tabBar)
     }
     
     /// Method to initialize state on view appearance
