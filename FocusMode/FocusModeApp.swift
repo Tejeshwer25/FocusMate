@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct FocusModeApp: App {
+struct FocusModeApp: App {    
     var body: some Scene {
         WindowGroup {
             TabBarViewController()

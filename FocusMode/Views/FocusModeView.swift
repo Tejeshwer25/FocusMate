@@ -6,16 +6,28 @@
 //
 
 import SwiftUI
+import Combine
 import AVFoundation
 
 struct FocusModeView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
+
     
     @State var userTask: UserTaskModel
     @State private var showOverlay = false
     @State private var progress: CGFloat = 0.0
-    @State private var timeRemaining: CGFloat = 0.0
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var timeRemaining: CGFloat = 0.0 {
+        didSet {
+            self.timeRemainingString = self.getTimeRemainingString()
+        }
+    }
+    @State private var timeRemainingString: String = ""
+    @State private var timerConnection: Cancellable?
+    @State private var sessionCancelled = false
+    @State private var sessionCancellationAlert = false
+    
+    let timer = Timer.publish(every: 1, on: .main, in: .common)
     
     var body: some View {
         VStack(spacing: 25) {
@@ -25,11 +37,21 @@ struct FocusModeView: View {
             Text("Focus mode active")
                 .font(.title)
             
-            ProgressView(progress: $progress)
-                .frame(width: 150, height: 150)
+            ProgressView(progress: $progress, timeRemaining: $timeRemainingString)
+                .frame(width: 200, height: 200)
             
             Spacer()
             
+            HStack {
+                Image(systemName: "info.circle")
+                Text("For accurate focus tracking, stay on this screen or lock your device. Time will not be tracked in the background.")
+            }
+            .padding()
+            .background {
+                RoundedRectangle(cornerRadius: 10)
+                    .foregroundStyle(Color.orange.opacity(0.2))
+            }
+            .padding(.horizontal, 20)
             
             Button {
                 dismiss()
@@ -80,12 +102,35 @@ struct FocusModeView: View {
                 }
             }
         }
+        .alert("Session Cancelled", isPresented: $sessionCancellationAlert) {
+                    Button("OK", role: .cancel) {
+                        dismiss()
+                    }
+        } message: {
+            Text("Your focus session was cancelled because the app was moved to background.")
+        }
         .onAppear {
             self.initializeTimeRemaining()
+            self.timerConnection = self.timer.connect()
+        }
+        .onDisappear {
+            self.timerConnection?.cancel()
         }
         .onReceive(timer) { _ in
             self.updateProgress()
         }
+        .onChange(of: self.scenePhase, { oldValue, newPhase in
+            if newPhase == .background {
+                let isUnlocked = UIApplication.shared.isProtectedDataAvailable
+                if isUnlocked {
+                    sessionCancelled = true
+                    timerConnection?.cancel()
+                }
+            }
+            if newPhase == .active && sessionCancelled {
+                sessionCancellationAlert = true
+            }
+        })
         .toolbarVisibility(.hidden, for: .navigationBar)
         .toolbarVisibility(.hidden, for: .tabBar)
     }
@@ -109,9 +154,18 @@ struct FocusModeView: View {
             AudioServicesPlayAlertSound(SystemSoundID(1004))
         }
     }
+    
+    /// Method to get time remaining in `mm:ss` format
+    /// - Returns: time remaining in string `mm:ss` format
+    func getTimeRemainingString() -> String {
+        let seconds = self.timeRemaining
+        let minutes = seconds / 60
+        let remainingSeconds = seconds.truncatingRemainder(dividingBy: 60)
+        return String(format: "%.0fm:%.0fs", floor(minutes), remainingSeconds)
+    }
 }
 
 #Preview {
-    let userTask = UserTaskModel(taskName: "", type: .chores, timeAlloted: 400)
+    let userTask = UserTaskModel(taskName: "", type: .chores, timeAlloted: 1000)
     FocusModeView(userTask: userTask)
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ProgressView: View {
     @Binding var progress: CGFloat
+    @Binding var timeRemaining: String
     
     var body: some View {
         ZStack {
@@ -27,7 +28,8 @@ struct ProgressView: View {
                 .animation(.easeInOut(duration: 0.2), value: progress)
             
             // Percentage text
-            Text("\(Int(progress * 100))%")
+            Text("\(timeRemaining)")
+                .padding()
                 .font(.title2)
                 .bold()
         }
@@ -35,5 +37,5 @@ struct ProgressView: View {
 }
 
 #Preview {
-    ProgressView(progress: .constant(0.1))
+    ProgressView(progress: .constant(0.1), timeRemaining: .constant("75m:4s"))
 }
