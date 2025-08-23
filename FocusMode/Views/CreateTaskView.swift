@@ -24,7 +24,7 @@ enum AppErrors: Error {
     }
 }
 
-struct ContentView: View {
+struct CreateTaskView: View {
     @Binding var navPath: [NavigationLinkType]
     
     @State private var focusTime    = ""
@@ -123,7 +123,7 @@ struct ContentView: View {
             }
             .padding(.top, 25)
             .padding(.horizontal)
-            .navigationTitle("Create your task")
+            .navigationTitle("Create new task")
         }
     }
     
@@ -180,5 +180,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(navPath: .constant([.creteTask]))
+    CreateTaskView(navPath: .constant([.creteTask]))
 }

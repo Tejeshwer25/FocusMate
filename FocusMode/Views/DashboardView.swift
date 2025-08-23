@@ -22,7 +22,7 @@ struct DashboardView: View {
                         .listRowInsets(EdgeInsets())
                 }
                 
-                Section("Task History: ") {
+                Section {
                     ForEach(tasks) { task in
                         HStack {
                             Text("🏋️‍♂️")
@@ -34,6 +34,19 @@ struct DashboardView: View {
                             Text("/")
                             Text(String(format: "%.2f", Double(task.timeAlloted)))
                         }
+                    }
+                } header: {
+                    HStack {
+                        Text("Task History :")
+                        
+                        Spacer()
+                        
+                        Button {
+                            
+                        } label: {
+                            Text("View all")
+                        }
+                        .textCase(.lowercase)
                     }
                 }
                 
@@ -52,7 +65,7 @@ struct DashboardView: View {
             .navigationDestination(for: NavigationLinkType.self) { value in
                 switch value {
                 case .creteTask:
-                    ContentView(navPath: $path)
+                    CreateTaskView(navPath: $path)
                 case .focusMode(let userTaskModel):
                     FocusModeView(userTask: userTaskModel)
                 }
