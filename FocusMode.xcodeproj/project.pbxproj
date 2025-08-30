@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A47EE6A32E631EDA002A2FD2 /* FocusModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A47EE6A12E631EDA002A2FD2 /* FocusModel.xcdatamodeld */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		A47EE6A22E631EDA002A2FD2 /* FocusModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FocusModel.xcdatamodel; sourceTree = "<group>"; };
 		A488190D2E4D43E900A29271 /* FocusMode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FocusMode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -45,6 +50,7 @@
 		A48819042E4D43E900A29271 = {
 			isa = PBXGroup;
 			children = (
+				A47EE6A12E631EDA002A2FD2 /* FocusModel.xcdatamodeld */,
 				A488190F2E4D43E900A29271 /* FocusMode */,
 				A488190E2E4D43E900A29271 /* Products */,
 			);
@@ -132,6 +138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A47EE6A32E631EDA002A2FD2 /* FocusModel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,6 +342,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		A47EE6A12E631EDA002A2FD2 /* FocusModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				A47EE6A22E631EDA002A2FD2 /* FocusModel.xcdatamodel */,
+			);
+			currentVersion = A47EE6A22E631EDA002A2FD2 /* FocusModel.xcdatamodel */;
+			path = FocusModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = A48819052E4D43E900A29271 /* Project object */;
 }

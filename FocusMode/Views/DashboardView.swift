@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct DashboardView: View {
-    let tasks: [UserTaskModel] = [
-        .init(taskName: "Swimming", type: .exercise, timeAlloted: 10),
-        .init(taskName: "Dancing", type: .creative, timeAlloted: 30)
-    ]
+    let viewModel = DashboardViewModel()
     @State private var path = [NavigationLinkType]()
+    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \FocusSessionEntity.startTime,
+                                                     ascending: false)],
+                  animation: .default) private var sessions: FetchedResults<FocusSessionEntity>
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -23,17 +23,8 @@ struct DashboardView: View {
                 }
                 
                 Section {
-                    ForEach(tasks) { task in
-                        HStack {
-                            Text("🏋️‍♂️")
-                            Text(task.taskName)
-                            
-                            Spacer()
-                            
-                            Text(String(format: "%.2f", Double(task.timeCompleted)))
-                            Text("/")
-                            Text(String(format: "%.2f", Double(task.timeAlloted)))
-                        }
+                    ForEach(sessions) { task in
+                        DashboardSessionInfo(sessioninfo: self.viewModel.getUserSessionInfo(from: task))
                     }
                 } header: {
                     HStack {
@@ -118,7 +109,6 @@ struct DashboardView: View {
             .opacity(0.8)
         }
     }
-
 }
 
 #Preview {
