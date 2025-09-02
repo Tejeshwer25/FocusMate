@@ -56,6 +56,7 @@ struct FocusModeView: View {
             .padding(.horizontal, 20)
             
             Button {
+                self.saveFocusSessionToCoreData()
                 dismiss()
             } label: {
                 Text("Abandon Task")
@@ -107,6 +108,7 @@ struct FocusModeView: View {
         }
         .alert("Session Cancelled", isPresented: $sessionCancellationAlert) {
                     Button("OK", role: .cancel) {
+                        self.saveFocusSessionToCoreData()
                         dismiss()
                     }
         } message: {
@@ -150,6 +152,7 @@ struct FocusModeView: View {
         self.timeRemaining -= 1
         if self.timeRemaining >= 0 {
             let progress = (timeAlloted - self.timeRemaining) / timeAlloted
+            self.userTask.timeCompleted = timeAlloted - self.timeRemaining
             self.progress = progress
         } else {
             self.showOverlay = true
@@ -175,7 +178,7 @@ struct FocusModeView: View {
         taskRequest.predicate = requestPredicate
         
         do {
-            let task = try context.fetch(taskRequest).first
+            task = try context.fetch(taskRequest).first
         } catch {}
         
         if task == nil {

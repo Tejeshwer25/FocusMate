@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DashboardSessionInfo: View {
     @State var sessioninfo: UserTaskModel
+    @ObservedObject var viewModel: DashboardViewModel
     
     var body: some View {
         HStack {
@@ -17,12 +18,23 @@ struct DashboardSessionInfo: View {
             
             Spacer()
             
-            Text("\(String(format: "%.2f", Double(sessioninfo.timeCompleted))) / \(String(format: "%.2f", Double(sessioninfo.timeAlloted)))")
+            Text("\(self.getReadableTime(from: sessioninfo.timeCompleted)) / \(self.getReadableTime(from: sessioninfo.timeAlloted))")
         }
+    }
+    
+    /// Method to get time string from session time property
+    /// - Parameter seconds: time in float
+    /// - Returns: time in representable format
+    func getReadableTime(from seconds: CGFloat) -> String {
+        let secondsDouble = Double(seconds)
+        let time = self.viewModel.convertSecondsToRequiredTime(seconds: secondsDouble)
+        let timeString = self.viewModel.getReadableStringFromTime(time: time)
+        
+        return timeString
     }
 }
 
 #Preview {
     let userTaskModel = UserTaskModel(taskName: "Test", type: .chores, timeAlloted: 40.0)
-    DashboardSessionInfo(sessioninfo: userTaskModel)
+    DashboardSessionInfo(sessioninfo: userTaskModel, viewModel: DashboardViewModel())
 }

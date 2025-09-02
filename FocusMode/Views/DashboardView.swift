@@ -10,9 +10,19 @@ import SwiftUI
 struct DashboardView: View {
     let viewModel = DashboardViewModel()
     @State private var path = [NavigationLinkType]()
-    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \FocusSessionEntity.startTime,
-                                                     ascending: false)],
-                  animation: .default) private var sessions: FetchedResults<FocusSessionEntity>
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \FocusSessionEntity.startTime, ascending: false)],
+        animation: .default
+    ) private var latestTasks: FetchedResults<FocusSessionEntity>
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \FocusSessionEntity.startTime, ascending: false)],
+        predicate: NSPredicate(
+            format: "startTime >= %@ AND startTime < %@",
+            Calendar.current.startOfDay(for: Date()) as NSDate,
+            Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 1, to: Date())!) as NSDate
+        ),
+        animation: .default
+    ) private var todaysTasks: FetchedResults<FocusSessionEntity>
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -23,8 +33,16 @@ struct DashboardView: View {
                 }
                 
                 Section {
-                    ForEach(sessions) { task in
-                        DashboardSessionInfo(sessioninfo: self.viewModel.getUserSessionInfo(from: task))
+                    if latestTasks.isEmpty {
+                        Text("No focus session created yet.")
+                            .font(.headline)
+                            .fontDesign(.serif)
+                    } else {
+                        ForEach(latestTasks.prefix(5)) { task in
+                            DashboardSessionInfo(
+                                sessioninfo: self.viewModel.getUserSessionInfo(from: task),
+                                viewModel: self.viewModel)
+                        }
                     }
                 } header: {
                     HStack {
@@ -32,12 +50,13 @@ struct DashboardView: View {
                         
                         Spacer()
                         
-                        Button {
-                            
-                        } label: {
-                            Text("View all")
+                        if latestTasks.count > 5 {
+                            Button {
+                            } label: {
+                                Text("View all")
+                            }
+                            .textCase(.lowercase)
                         }
-                        .textCase(.lowercase)
                     }
                 }
                 
@@ -68,7 +87,7 @@ struct DashboardView: View {
         VStack {
             HStack {
                 VStack {
-                    Text("1h0m")
+                    Text("\(self.viewModel.getTimeStringForUI(from: self.todaysTasks))")
                         .font(.title)
                         .fontWeight(.bold)
                     Text("Time spent today")
@@ -77,7 +96,7 @@ struct DashboardView: View {
                 Spacer()
                 
                 VStack {
-                    Text("3")
+                    Text("\(todaysTasks.count)")
                         .font(.title)
                         .fontWeight(.bold)
                     Text("Tasks created today")
