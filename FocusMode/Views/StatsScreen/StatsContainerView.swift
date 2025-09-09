@@ -1,0 +1,29 @@
+//
+//  StatsContainerView.swift
+//  FocusMode
+//
+//  Created by Tejeshwer Singh on 09/09/25.
+//
+
+import SwiftUI
+
+struct StatsContainerView: View {
+    @State private var timeDedicatedGraphMode = StatsViewModel.GraphPlotOptions.week.rawValue
+    let viewModel = StatsViewModel()
+    
+    var body: some View {
+        NavigationStack {
+            List {
+                StatsHeader()
+                
+                StatTimeDedicatedSection(sessionActivities: self.viewModel.sampleData(for: StatsViewModel.GraphPlotOptions(rawValue: self.timeDedicatedGraphMode) ?? .week),
+                                         selectedRange: $timeDedicatedGraphMode)
+            }
+            .navigationTitle("Stats")
+        }
+    }
+}
+
+#Preview {
+    StatsContainerView()
+}

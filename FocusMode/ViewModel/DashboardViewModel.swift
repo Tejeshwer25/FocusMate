@@ -78,6 +78,9 @@ class DashboardViewModel: ObservableObject {
             result += "\(time.second)s "
         }
         
+        if result.isEmpty {
+            return "0s"
+        }
         return result
     }
 }
