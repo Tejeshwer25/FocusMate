@@ -15,7 +15,7 @@ struct TabBarViewController: View {
             }
             
             Tab("Statistics", systemImage: "chart.bar.xaxis") {
-                Text("Stats")
+                StatsContainerView()
             }
         }
     }

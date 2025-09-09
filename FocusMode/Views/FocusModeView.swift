@@ -8,10 +8,12 @@
 import SwiftUI
 import Combine
 import AVFoundation
+import CoreData
 
 struct FocusModeView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.managedObjectContext) private var context
 
     
     @State var userTask: UserTaskModel
@@ -54,6 +56,7 @@ struct FocusModeView: View {
             .padding(.horizontal, 20)
             
             Button {
+                self.saveFocusSessionToCoreData()
                 dismiss()
             } label: {
                 Text("Abandon Task")
@@ -87,6 +90,7 @@ struct FocusModeView: View {
                             .frame(width: 50, height: 50)
                         Text("Timer Up")
                         Button {
+                            self.saveFocusSessionToCoreData()
                             dismiss()
                         } label: {
                             Text("Go to Home")
@@ -104,6 +108,7 @@ struct FocusModeView: View {
         }
         .alert("Session Cancelled", isPresented: $sessionCancellationAlert) {
                     Button("OK", role: .cancel) {
+                        self.saveFocusSessionToCoreData()
                         dismiss()
                     }
         } message: {
@@ -147,6 +152,7 @@ struct FocusModeView: View {
         self.timeRemaining -= 1
         if self.timeRemaining >= 0 {
             let progress = (timeAlloted - self.timeRemaining) / timeAlloted
+            self.userTask.timeCompleted = timeAlloted - self.timeRemaining
             self.progress = progress
         } else {
             self.showOverlay = true
@@ -162,6 +168,42 @@ struct FocusModeView: View {
         let minutes = seconds / 60
         let remainingSeconds = seconds.truncatingRemainder(dividingBy: 60)
         return String(format: "%.0fm:%.0fs", floor(minutes), remainingSeconds)
+    }
+    
+    /// Method to save current session to core data
+    func saveFocusSessionToCoreData() {
+        var task: TaskEntity?
+        let taskRequest = TaskEntity.fetchRequest() as NSFetchRequest<TaskEntity>
+        let requestPredicate = NSPredicate(format: "type == %@", self.userTask.type.rawValue)
+        taskRequest.predicate = requestPredicate
+        
+        do {
+            task = try context.fetch(taskRequest).first
+        } catch {}
+        
+        if task == nil {
+            task = TaskEntity(context: self.context)
+            task?.id = UUID()
+            task?.type = self.userTask.type.rawValue
+            task?.createdAt = Date()
+        }
+        
+        let session = FocusSessionEntity(context: self.context)
+        session.id = UUID()
+        session.name = self.userTask.taskName
+        session.durationAlloted = self.userTask.timeAlloted
+        session.durationCompleted = self.userTask.timeCompleted
+        session.startTime = Date()
+        session.endTime = Date()
+        session.focusScore = 0
+        
+        task?.addToSessions(session)
+        
+        do {
+            try self.context.save()
+        } catch {
+            print("Error while saving focus session \(error.localizedDescription)")
+        }
     }
 }
 

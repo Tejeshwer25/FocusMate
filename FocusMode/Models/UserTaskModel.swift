@@ -19,17 +19,34 @@ enum TaskType: String, CaseIterable, Codable {
     func getTaskName() -> String {
         switch self {
         case .chores:
-            return "Chores 🧹"
+            return "Chores"
         case .exercise:
-            return "Excercises 🏋️‍♂️"
+            return "Excercises"
         case .work:
-            return "Work 💼"
+            return "Work"
         case .rest:
-            return "Rest 😴"
+            return "Rest"
         case .learning:
-            return "Learning 📚"
+            return "Learning"
         case .creative:
-            return "Creative 🎨"
+            return "Creative"
+        }
+    }
+    
+    func getEmojiForType() -> String {
+        switch self {
+        case .chores:
+            return "🧹"
+        case .exercise:
+            return "🏋️‍♂️"
+        case .work:
+            return "💼"
+        case .rest:
+            return "😴"
+        case .learning:
+            return "📚"
+        case .creative:
+            return "🎨"
         }
     }
 }
