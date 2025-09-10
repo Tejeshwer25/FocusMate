@@ -18,6 +18,10 @@ struct StatsContainerView: View {
                 
                 StatTimeDedicatedSection(sessionActivities: self.viewModel.sampleData(for: StatsViewModel.GraphPlotOptions(rawValue: self.timeDedicatedGraphMode) ?? .week),
                                          selectedRange: $timeDedicatedGraphMode)
+                
+                StatsFocusScoreSection(taskFocusScore: self.viewModel.generateFocusScoreMockData())
+                
+                StatsTaskBreakdownView(tasks: self.viewModel.getTaskBreakdownData())
             }
             .navigationTitle("Stats")
         }
