@@ -33,10 +33,20 @@ struct StatsTaskBreakdownView: View {
                               : "arrowtriangle.down.fill")
                     }
                 }
-                .padding(.vertical, 8)
+                .padding()
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 8, leading: 5, bottom: 8, trailing: 5))
+                .listRowBackground(Color.clear)
+                .background {
+                    RoundedRectangle(cornerRadius: 10)
+                        .shadow(color: Color(uiColor: .tertiaryLabel), radius: 3)
+                        .foregroundStyle(Color(uiColor: .systemBackground))
+                }
                 
                 if task.taskType == self.selectedTask && self.isExpanded {
                     getExpandedSection(task: task)
+                        .listRowInsets(EdgeInsets(top: 8, leading: 5, bottom: 8, trailing: 5))
+                        .listRowBackground(Color.clear)
                 }
             }
         }
@@ -44,17 +54,31 @@ struct StatsTaskBreakdownView: View {
     
     func getExpandedSection(task: StatsViewModel.TaskBreakdown) -> some View {
         VStack(alignment: .leading) {
+            HStack {
+                Text("Session Name")
+                Spacer()
+                Text("Completion Percent")
+            }
+            .foregroundStyle(Color(uiColor: .secondaryLabel))
+            .font(.footnote)
+            .padding(.horizontal)
+            
+            Divider()
+                .padding(.bottom)
+            
             ForEach(task.sessions) { session in
                 HStack {
                     Text(session.title)
                     Spacer()
                     Text("\(session.completionPercent)%")
                 }
-                .padding()
-                .background(Color.gray.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
             }
+            .padding(.horizontal)
+            .padding(.bottom)
         }
+        .padding(.top)
+        .background(Color.gray.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }
 

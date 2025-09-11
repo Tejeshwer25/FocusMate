@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Charts
 
 struct StatsContainerView: View {
     @State private var timeDedicatedGraphMode = StatsViewModel.GraphPlotOptions.week.rawValue
@@ -19,7 +20,7 @@ struct StatsContainerView: View {
                 StatTimeDedicatedSection(sessionActivities: self.viewModel.sampleData(for: StatsViewModel.GraphPlotOptions(rawValue: self.timeDedicatedGraphMode) ?? .week),
                                          selectedRange: $timeDedicatedGraphMode)
                 
-                StatsFocusScoreSection(taskFocusScore: self.viewModel.generateFocusScoreMockData())
+                    StatsFocusScoreSection(taskFocusScore: self.viewModel.generateFocusScoreMockData())
                 
                 StatsTaskBreakdownView(tasks: self.viewModel.getTaskBreakdownData())
             }

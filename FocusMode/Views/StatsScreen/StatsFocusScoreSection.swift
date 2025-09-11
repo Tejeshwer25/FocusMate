@@ -31,11 +31,12 @@ struct StatsFocusScoreSection: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
-                .background(
+                .overlay {
                     RoundedRectangle(cornerRadius: 8)
-                        .foregroundStyle(Color(uiColor: .tertiarySystemBackground))
-                )
+                        .stroke(Color(uiColor: .tertiaryLabel))
+                }
             }
+            .foregroundStyle(Color(uiColor: .label))
             .padding(.vertical)
 
             
@@ -60,7 +61,7 @@ struct StatsFocusScoreSection: View {
     }
     
     func getDataBasedOnSelection() -> [StatsViewModel.FocusScoreMockData] {
-        if let taskSelected = TaskType(rawValue: self.selectedTask) {
+        if TaskType(rawValue: self.selectedTask) != nil {
             return self.taskFocusScore.filter { $0.taskName == self.selectedTask }
         } else {
             return self.taskFocusScore
