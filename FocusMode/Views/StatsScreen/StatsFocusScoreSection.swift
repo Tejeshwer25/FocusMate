@@ -115,18 +115,3 @@ struct StatsFocusScoreSection: View {
     let mock = vm.generateFocusScoreMockData()
     StatsFocusScoreSection(taskFocusScore: mock)
 }
-
-//Picker("Selected Task", selection: $selectedTask) {
-//    Text("All Tasks").tag("all")
-//    ForEach(TaskType.allCases, id: \.self) { task in
-//        Text(task.getEmojiForType() + " " + task.getTaskName())
-//            .tag(task.rawValue)
-//    }
-//}
-//.pickerStyle(.menu)
-//.labelsHidden()
-//.frame(maxWidth: .infinity, alignment: .leading)
-//.padding()
-//.background(Color(uiColor: .tertiarySystemBackground))
-//.clipShape(RoundedRectangle(cornerRadius: 10))
-//.padding(.vertical)
