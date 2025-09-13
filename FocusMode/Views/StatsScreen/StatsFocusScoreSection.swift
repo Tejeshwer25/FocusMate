@@ -9,8 +9,13 @@ import SwiftUI
 import Charts
 
 struct StatsFocusScoreSection: View {
-    let taskFocusScore: [StatsViewModel.FocusScoreMockData]
     @State private var selectedTask = "all"
+    @State private var selectedDateOnChart: Date?
+    
+    private var selectedDate: Date? {
+        self.selectedDateOnChart
+    }
+    let taskFocusScore: [StatsViewModel.FocusScoreMockData]
     
     var body: some View {
         Section("Focus Score") {
@@ -43,9 +48,45 @@ struct StatsFocusScoreSection: View {
             Chart(self.getDataBasedOnSelection()) {
                 LineMark(x: .value("Time", $0.date),
                          y: .value("Focus Score", $0.score))
+                
+                if let selectedDate  {
+                    RuleMark(x: .value("Selected Date", selectedDate, unit: .day))
+                        .foregroundStyle(Color.appTextSecondary.opacity(0.4))
+                        .zIndex(-1)
+                        .offset(y: -50)
+                        .annotation(position: .bottom,
+                                    spacing: 0,
+                                    overflowResolution: .init(x: .fit, y: .disabled)) {
+                            popoverView
+                                .zIndex(10)
+                        }
+                }
             }
+            .chartXSelection(value: $selectedDateOnChart)
             .frame(height: 300)
             .padding()
+        }
+    }
+    
+    var popoverView: some View {
+        VStack {
+            HStack {
+                Text("Date: ")
+                Spacer()
+                Text(selectedDate ?? Date(), format: .dateTime.day().month())
+            }
+            
+            HStack {
+                Text("Time: ")
+                Spacer()
+                Text("8hrs")
+            }
+        }
+        .padding()
+        .background(Color.appCard)
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.appTextSecondary)
         }
     }
     

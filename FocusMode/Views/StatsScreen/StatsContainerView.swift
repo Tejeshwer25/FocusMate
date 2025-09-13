@@ -17,10 +17,9 @@ struct StatsContainerView: View {
             List {
                 StatsHeader()
                 
-                StatTimeDedicatedSection(sessionActivities: self.viewModel.sampleData(for: StatsViewModel.GraphPlotOptions(rawValue: self.timeDedicatedGraphMode) ?? .week),
-                                         selectedRange: $timeDedicatedGraphMode)
+                StatTimeDedicatedSection(selectedRange: $timeDedicatedGraphMode, sessionActivities: self.viewModel.sampleData(for: StatsViewModel.GraphPlotOptions(rawValue: self.timeDedicatedGraphMode) ?? .week))
                 
-                    StatsFocusScoreSection(taskFocusScore: self.viewModel.generateFocusScoreMockData())
+                StatsFocusScoreSection(taskFocusScore: self.viewModel.generateFocusScoreMockData())
                 
                 StatsTaskBreakdownView(tasks: self.viewModel.getTaskBreakdownData())
             }
