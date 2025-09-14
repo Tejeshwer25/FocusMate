@@ -5,7 +5,7 @@
 //  Created by Tejeshwer Singh on 13/09/25.
 //
 
-import UIKit
+import SwiftUI
 
 enum AppFonts {
     case mainHeading          // Main Screen title or section headers
@@ -22,30 +22,30 @@ enum AppFonts {
     case highlightedStatsText
     case microLabel
     
-    var font: UIFont? {
+    var font: Font? {
         switch self {
         case .mainHeading:
-            return UIFont.preferredFont(forTextStyle: .title2)
+            return .init(.title2)
         case .subSectionHeading:
-            return UIFont.preferredFont(forTextStyle: .headline)
+            return .init(.headline)
         case .chartAxisLabel:
-            return UIFont.preferredFont(forTextStyle: .caption1)
+            return .init(.caption)
         case .popoverMainInfo:
-            return UIFont.preferredFont(forTextStyle: .headline)
+            return .init(.headline)
         case .highlightedStatsText:
-            return UIFont.preferredFont(forTextStyle: .title3)
+            return .init(.title) // .init(.title3)
         case .microLabel:
-            return UIFont.preferredFont(forTextStyle: .caption2)
+            return .init(.caption2)
         case .secondaryText, .secondryButton:
-            return UIFont.preferredFont(forTextStyle: .callout)
+            return .init(.callout)
         case .popoverSecondaryInfo, .formFieldLabel:
-            return UIFont.preferredFont(forTextStyle: .subheadline)
+            return .init(.subheadline)
         case .normalText, .formFieldValue, .primryButton:
-            return UIFont.preferredFont(forTextStyle: .body)
+            return .init(.body)
         }
     }
     
-    var fontWeight: UIFont.Weight {
+    var fontWeight: Font.Weight {
         switch self {
         case .mainHeading,
                 .subSectionHeading,
