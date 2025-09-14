@@ -43,22 +43,22 @@ struct StatsFocusScoreSection: View {
             }
             .foregroundStyle(Color(uiColor: .label))
             .padding(.vertical)
-
+            
             
             Chart(self.getDataBasedOnSelection()) {
                 LineMark(x: .value("Time", $0.date),
                          y: .value("Focus Score", $0.score))
                 
-                if let selectedDate  {
-                    RuleMark(x: .value("Selected Date", selectedDate, unit: .day))
-                        .foregroundStyle(Color.appTextSecondary.opacity(0.4))
+                if let selectedDate {
+                    RuleMark(x: .value("Selected", selectedDate, unit: .day)) .lineStyle(StrokeStyle(lineWidth: 2, dash: [4]))
+                        .foregroundStyle(Color.appTextSecondary)
+                        .offset(yStart: 0)
                         .zIndex(-1)
-                        .offset(y: -50)
-                        .annotation(position: .bottom,
+                        .annotation(position: .top,
                                     spacing: 0,
-                                    overflowResolution: .init(x: .fit, y: .disabled)) {
+                                    overflowResolution: .init(x: .fit(to: .chart),
+                                                              y: .disabled)) {
                             popoverView
-                                .zIndex(10)
                         }
                 }
             }
@@ -83,7 +83,7 @@ struct StatsFocusScoreSection: View {
             }
         }
         .padding()
-        .background(Color.appCard)
+        .background(Color.appBackground)
         .overlay {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(Color.appTextSecondary)

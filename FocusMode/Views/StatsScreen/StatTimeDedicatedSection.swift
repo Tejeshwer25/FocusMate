@@ -40,7 +40,7 @@ struct StatTimeDedicatedSection: View {
                     
                     if let selectedDate {
                         RuleMark(x: .value("Selected", selectedDate, unit: .day))
-                            .foregroundStyle(Color.appTextSecondary.opacity(0.4))
+                            .foregroundStyle(Color.appTextSecondary.opacity(0.2))
                             .offset(yStart: 0)
                             .zIndex(-1)
                             .annotation(position: .top,
@@ -73,7 +73,7 @@ struct StatTimeDedicatedSection: View {
             }
         }
         .padding()
-        .background(Color.appCard)
+        .background(Color.appBackground)
         .overlay {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(Color.appTextSecondary)
