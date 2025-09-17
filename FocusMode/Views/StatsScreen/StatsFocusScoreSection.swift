@@ -31,7 +31,7 @@ struct StatsFocusScoreSection: View {
             } label: {
                 HStack {
                     Text(self.getSelectedMenuText())
-                    Spacer(minLength: 10) // 👈 Push chevron away
+                    Spacer(minLength: 10)
                     Image(systemName: "chevron.down")
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -54,10 +54,10 @@ struct StatsFocusScoreSection: View {
                         .foregroundStyle(Color.appTextSecondary)
                         .offset(yStart: 0)
                         .zIndex(-1)
-                        .annotation(position: .top,
+                        .annotation(position: .bottom,
                                     spacing: 0,
                                     overflowResolution: .init(x: .fit(to: .chart),
-                                                              y: .disabled)) {
+                                                              y: .fit)) {
                             popoverView
                         }
                 }

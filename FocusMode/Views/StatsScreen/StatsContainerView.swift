@@ -9,13 +9,19 @@ import SwiftUI
 import Charts
 
 struct StatsContainerView: View {
+    // Latest tasks fetched from core data
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \FocusSessionEntity.startTime, ascending: false)],
+        animation: .default
+    ) private var latestTasks: FetchedResults<FocusSessionEntity>
+    
     @State private var timeDedicatedGraphMode = StatsViewModel.GraphPlotOptions.week.rawValue
     let viewModel = StatsViewModel()
     
     var body: some View {
         NavigationStack {
             List {
-                StatsHeader()
+                StatsHeader(statsHeaderData: self.viewModel.getDataForHeader(from: latestTasks.map({$0})))
                 
                 StatTimeDedicatedSection(selectedRange: $timeDedicatedGraphMode,
                                          sessionActivities: self.viewModel.sampleData(for: StatsViewModel.GraphPlotOptions(rawValue: self.timeDedicatedGraphMode) ?? .week))
