@@ -10,37 +10,6 @@ import Foundation
 typealias SessionsCompletedAndAbandonedCount = (sessionsCompleted: Int, sessionsAbandoned: Int)
 
 class StatsViewModel: ObservableObject {
-    func sampleData(for duration: GraphPlotOptions) -> [GraphMockData] {
-        let calendar = Calendar.current
-        let now = Date()
-        
-        switch duration {
-        case .day:
-            // 24 hours for today
-            return (0..<24).map { hour in
-                let timeSpent = Double.random(in: 0...2) // e.g., up to 2 hrs in an hour slot
-                let date = calendar.date(byAdding: .hour, value: -hour, to: now)!
-                return GraphMockData(date: date, time: timeSpent)
-            }.reversed()
-            
-        case .week:
-            // 7 days
-            return (0..<7).map { day in
-                let timeSpent = Double.random(in: 0...8) // up to 8 hrs per day
-                let date = calendar.date(byAdding: .day, value: -day, to: now)!
-                return GraphMockData(date: date, time: timeSpent)
-            }.reversed()
-            
-        case .month:
-            // 30 days
-            return (0..<30).map { day in
-                let timeSpent = Double.random(in: 0...8) // up to 8 hrs per day
-                let date = calendar.date(byAdding: .day, value: -day, to: now)!
-                return GraphMockData(date: date, time: timeSpent)
-            }.reversed()
-        }
-    }
-    
     func generateFocusScoreMockData() -> [FocusScoreMockData] {
         let tasks = TaskType.allCases
         var data: [FocusScoreMockData] = []
@@ -188,6 +157,51 @@ class StatsViewModel: ObservableObject {
         
         return currentStreak
     }
+    
+    func getTimeFocused(for duration: GraphPlotOptions,
+                        from sessions: [FocusSessionEntity]) -> [GraphMockData] {
+        var timeFocusedData = [GraphMockData]()
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+
+        func isInRange(_ date: Date) -> Bool {
+            switch duration {
+            case .day:
+                return calendar.isDate(date, inSameDayAs: today)
+
+            case .week:
+                if let weekAgo = calendar.date(byAdding: .day, value: -7, to: today) {
+                    return date >= weekAgo
+                }
+                return false
+
+            case .month:
+                if let monthAgo = calendar.date(byAdding: .day, value: -31, to: today) {
+                    return date >= monthAgo
+                }
+                return false
+            }
+        }
+
+        for session in sessions {
+            let sessionDate = calendar.startOfDay(for: session.endTime ?? Date())
+            guard isInRange(sessionDate) else { continue }
+
+            if let index = timeFocusedData.firstIndex(where: { $0.date == sessionDate }) {
+                timeFocusedData[index].completedTime += session.durationCompleted
+                timeFocusedData[index].allotedTIme += session.durationAlloted
+            } else {
+                timeFocusedData.append(.init(
+                    date: sessionDate,
+                    completedTime: session.durationCompleted,
+                    allotedTIme: session.durationAlloted
+                ))
+            }
+        }
+
+        return timeFocusedData
+    }
+
 }
 
 
@@ -195,7 +209,8 @@ extension StatsViewModel {
     struct GraphMockData: Identifiable, Codable {
         var id = UUID()
         let date: Date
-        let time: Double
+        var completedTime: Double
+        var allotedTIme: Double
     }
     
     struct FocusScoreMockData: Identifiable {

@@ -24,7 +24,7 @@ struct StatsContainerView: View {
                 StatsHeader(statsHeaderData: self.viewModel.getDataForHeader(from: latestTasks.map({$0})))
                 
                 StatTimeDedicatedSection(selectedRange: $timeDedicatedGraphMode,
-                                         sessionActivities: self.viewModel.sampleData(for: StatsViewModel.GraphPlotOptions(rawValue: self.timeDedicatedGraphMode) ?? .week))
+                                         sessionActivities: self.viewModel.getTimeFocused(for: StatsViewModel.GraphPlotOptions(rawValue: self.timeDedicatedGraphMode) ?? .week, from: self.latestTasks.map(\.self)))
                 
                 StatsFocusScoreSection(taskFocusScore: self.viewModel.generateFocusScoreMockData())
                 
