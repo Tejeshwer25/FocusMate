@@ -9,50 +9,7 @@ import Foundation
 
 typealias SessionsCompletedAndAbandonedCount = (sessionsCompleted: Int, sessionsAbandoned: Int)
 
-class StatsViewModel: ObservableObject {
-    func getTaskBreakdownData() -> [TaskBreakdown] {
-        return [
-            TaskBreakdown(
-                taskType: .exercise,
-                sessions: [
-                    Session(title: "Morning Run", completionPercent: 90, date: Date()),
-                    Session(title: "Yoga", completionPercent: 80, date: Date().addingTimeInterval(-86400)),
-                    Session(title: "Gym Workout", completionPercent: 100, date: Date().addingTimeInterval(-172800))
-                ]
-            ),
-            TaskBreakdown(
-                taskType: .creative,
-                sessions: [
-                    Session(title: "Digital Painting", completionPercent: 75, date: Date()),
-                    Session(title: "Guitar Practice", completionPercent: 85, date: Date().addingTimeInterval(-86400))
-                ]
-            ),
-            TaskBreakdown(
-                taskType: .chores,
-                sessions: [
-                    Session(title: "Clean Kitchen", completionPercent: 100, date: Date()),
-                    Session(title: "Laundry", completionPercent: 70, date: Date().addingTimeInterval(-86400)),
-                    Session(title: "Organize Desk", completionPercent: 60, date: Date().addingTimeInterval(-172800))
-                ]
-            ),
-            TaskBreakdown(
-                taskType: .learning,
-                sessions: [
-                    Session(title: "SwiftUI Study", completionPercent: 95, date: Date()),
-                    Session(title: "DSA Practice", completionPercent: 85, date: Date().addingTimeInterval(-86400)),
-                    Session(title: "Read Book", completionPercent: 60, date: Date().addingTimeInterval(-172800))
-                ]
-            ),
-            TaskBreakdown(
-                taskType: .work,
-                sessions: [
-                    Session(title: "Bug Fixes", completionPercent: 100, date: Date()),
-                    Session(title: "Feature Development", completionPercent: 80, date: Date().addingTimeInterval(-86400))
-                ]
-            )
-        ]
-    }
-    
+class StatsViewModel: ObservableObject {    
     /// Method to get data for header section
     /// - Parameter from: focus session entity containing all data
     /// - Returns: Data for stats header view
@@ -150,18 +107,18 @@ class StatsViewModel: ObservableObject {
         var timeFocusedData = [GraphMockData]()
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
-
+        
         func isInRange(_ date: Date) -> Bool {
             switch duration {
             case .day:
                 return calendar.isDate(date, inSameDayAs: today)
-
+                
             case .week:
                 if let weekAgo = calendar.date(byAdding: .day, value: -7, to: today) {
                     return date >= weekAgo
                 }
                 return false
-
+                
             case .month:
                 if let monthAgo = calendar.date(byAdding: .day, value: -31, to: today) {
                     return date >= monthAgo
@@ -169,11 +126,11 @@ class StatsViewModel: ObservableObject {
                 return false
             }
         }
-
+        
         for session in (sessions ?? []) {
             let sessionDate = calendar.startOfDay(for: session.endTime ?? Date())
             guard isInRange(sessionDate) else { continue }
-
+            
             if let index = timeFocusedData.firstIndex(where: { $0.date == sessionDate }) {
                 timeFocusedData[index].completedTime += session.durationCompleted
                 timeFocusedData[index].allotedTIme += session.durationAlloted
@@ -185,7 +142,7 @@ class StatsViewModel: ObservableObject {
                 ))
             }
         }
-
+        
         return timeFocusedData
     }
     
@@ -212,6 +169,31 @@ class StatsViewModel: ObservableObject {
         
         return focusScoreData
     }
+    
+    /// Method to get grouped tasks from all created tasks
+    /// - Parameter sessions: session created till date
+    /// - Returns: session grouped based on type
+    func getGroupedSessions(from sessions: [FocusSessionEntity]?) -> [TaskBreakdown] {
+        var groupedSessions = [TaskBreakdown]()
+        
+        for session in (sessions ?? []) {
+            let completionPercent = (session.durationCompleted / session.durationAlloted) * 100
+            let currentSession = Session(title: session.name ?? "n/a",
+                                         completionPercent: completionPercent,
+                                         date: session.endTime ?? Date())
+            
+            if let index = groupedSessions.firstIndex(where: { $0.taskType.rawValue == session.task?.type }) {
+                groupedSessions[index].sessions.append(currentSession)
+            } else {
+                let taskType = TaskType(rawValue: session.task?.type ?? "") ?? .chores
+                
+                let task = TaskBreakdown(taskType: taskType, sessions: [currentSession])
+                groupedSessions.append(task)
+            }
+        }
+        
+        return groupedSessions
+    }
 }
 
 
@@ -226,7 +208,7 @@ extension StatsViewModel {
     struct TaskBreakdown: Identifiable {
         let id = UUID()
         let taskType: TaskType
-        let sessions: [Session]
+        var sessions: [Session]
         
         var totalSessions: Int {
             sessions.count
@@ -242,7 +224,7 @@ extension StatsViewModel {
     struct Session: Identifiable {
         let id = UUID()
         let title: String
-        let completionPercent: Int
+        let completionPercent: Double
         let date: Date
     }
     

@@ -35,7 +35,7 @@ struct StatsContainerView: View {
                     StatsFocusScoreSection(taskFocusScore: self.viewModel.getFocusScorePerDayData(from: self.sessionsCreated))
                 }
                 
-                StatsTaskBreakdownView(tasks: self.viewModel.getTaskBreakdownData())
+                StatsTaskBreakdownView(tasks: self.viewModel.getGroupedSessions(from: self.sessionsCreated))
             }
             .navigationTitle("Stats")
         }
