@@ -44,27 +44,36 @@ struct StatsFocusScoreSection: View {
             .foregroundStyle(Color(uiColor: .label))
             .padding(.vertical)
             
-            
-            Chart(self.getDataBasedOnSelection()) {
-                LineMark(x: .value("Time", $0.date),
-                         y: .value("Focus Score", $0.score))
-                
-                if let selectedDate {
-                    RuleMark(x: .value("Selected", selectedDate, unit: .day)) .lineStyle(StrokeStyle(lineWidth: 2, dash: [4]))
-                        .foregroundStyle(Color.appTextSecondary)
-                        .offset(yStart: 0)
-                        .zIndex(-1)
-                        .annotation(position: .bottom,
-                                    spacing: 0,
-                                    overflowResolution: .init(x: .fit(to: .chart),
-                                                              y: .fit)) {
-                            popoverView
-                        }
+            if self.getDataBasedOnSelection().count > 1 {
+                Chart(self.getDataBasedOnSelection()) {
+                    LineMark(x: .value("Time", $0.date),
+                             y: .value("Focus Score", $0.score))
+                    
+                    if let selectedDate {
+                        RuleMark(x: .value("Selected", selectedDate, unit: .day)) .lineStyle(StrokeStyle(lineWidth: 2, dash: [4]))
+                            .foregroundStyle(Color.appTextSecondary)
+                            .offset(yStart: 0)
+                            .zIndex(-1)
+                            .annotation(position: .bottom,
+                                        spacing: 0,
+                                        overflowResolution: .init(x: .fit(to: .chart),
+                                                                  y: .fit)) {
+                                popoverView
+                            }
+                    }
+                }
+                .chartXSelection(value: $selectedDateOnChart)
+                .frame(height: 300)
+                .padding()
+            } else {
+                HStack {
+                    Spacer()
+                    Text("Not enough data to predict focus score")
+                        .font(AppFonts.normalText.font)
+                        .frame(height: 300)
+                    Spacer()
                 }
             }
-            .chartXSelection(value: $selectedDateOnChart)
-            .frame(height: 300)
-            .padding()
         }
     }
     
@@ -103,7 +112,8 @@ struct StatsFocusScoreSection: View {
     
     func getDataBasedOnSelection() -> [StatsViewModel.FocusScoreMockData] {
         if TaskType(rawValue: self.selectedTask) != nil {
-            return self.taskFocusScore.filter { $0.taskName == self.selectedTask }
+            let data = self.taskFocusScore.filter { $0.taskName == self.selectedTask }
+            return data
         } else {
             return self.taskFocusScore
         }
@@ -112,6 +122,6 @@ struct StatsFocusScoreSection: View {
 
 #Preview {
     let vm = StatsViewModel()
-    let mock = vm.generateFocusScoreMockData()
+    let mock = vm.getFocusScorePerDayData(from: [])
     StatsFocusScoreSection(taskFocusScore: mock)
 }

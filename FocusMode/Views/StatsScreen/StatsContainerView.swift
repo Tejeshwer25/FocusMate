@@ -16,6 +16,11 @@ struct StatsContainerView: View {
     ) private var latestTasks: FetchedResults<FocusSessionEntity>
     
     @State private var timeDedicatedGraphMode = StatsViewModel.GraphPlotOptions.week.rawValue
+    
+    private var sessionsCreated: [FocusSessionEntity]? {
+        return self.latestTasks.map(\.self)
+    }
+    
     let viewModel = StatsViewModel()
     
     var body: some View {
@@ -24,9 +29,11 @@ struct StatsContainerView: View {
                 StatsHeader(statsHeaderData: self.viewModel.getDataForHeader(from: latestTasks.map({$0})))
                 
                 StatTimeDedicatedSection(selectedRange: $timeDedicatedGraphMode,
-                                         sessionActivities: self.viewModel.getTimeFocused(for: StatsViewModel.GraphPlotOptions(rawValue: self.timeDedicatedGraphMode) ?? .week, from: self.latestTasks.map(\.self)))
+                                         sessionActivities: self.viewModel.getTimeFocused(for: StatsViewModel.GraphPlotOptions(rawValue: self.timeDedicatedGraphMode) ?? .week, from: self.sessionsCreated))
                 
-                StatsFocusScoreSection(taskFocusScore: self.viewModel.generateFocusScoreMockData())
+                if (self.sessionsCreated?.count ?? 0) >= 5 {
+                    StatsFocusScoreSection(taskFocusScore: self.viewModel.getFocusScorePerDayData(from: self.sessionsCreated))
+                }
                 
                 StatsTaskBreakdownView(tasks: self.viewModel.getTaskBreakdownData())
             }

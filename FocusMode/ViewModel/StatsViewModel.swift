@@ -10,24 +10,6 @@ import Foundation
 typealias SessionsCompletedAndAbandonedCount = (sessionsCompleted: Int, sessionsAbandoned: Int)
 
 class StatsViewModel: ObservableObject {
-    func generateFocusScoreMockData() -> [FocusScoreMockData] {
-        let tasks = TaskType.allCases
-        var data: [FocusScoreMockData] = []
-        
-        for dayOffset in 0..<30 {
-            let date = Calendar.current.date(byAdding: .day, value: -dayOffset, to: .now)!
-            
-            for task in tasks {
-                let score = Double.random(in: 40...100) // random completion %
-                data.append(
-                    FocusScoreMockData(taskName: task.rawValue, date: date, score: score)
-                )
-            }
-        }
-        
-        return data
-    }
-    
     func getTaskBreakdownData() -> [TaskBreakdown] {
         return [
             TaskBreakdown(
@@ -158,8 +140,13 @@ class StatsViewModel: ObservableObject {
         return currentStreak
     }
     
+    /// Method to get time focus on a particular task for a given time range
+    /// - Parameters:
+    ///   - duration: range for which to calculate durationg
+    ///   - sessions: sessions data
+    /// - Returns: plottable data
     func getTimeFocused(for duration: GraphPlotOptions,
-                        from sessions: [FocusSessionEntity]) -> [GraphMockData] {
+                        from sessions: [FocusSessionEntity]?) -> [GraphMockData] {
         var timeFocusedData = [GraphMockData]()
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
@@ -183,7 +170,7 @@ class StatsViewModel: ObservableObject {
             }
         }
 
-        for session in sessions {
+        for session in (sessions ?? []) {
             let sessionDate = calendar.startOfDay(for: session.endTime ?? Date())
             guard isInRange(sessionDate) else { continue }
 
@@ -201,36 +188,34 @@ class StatsViewModel: ObservableObject {
 
         return timeFocusedData
     }
-
+    
+    /// Method to get focus score from per day data
+    /// - Parameter sessions: focus sessions
+    /// - Returns: per day change in focus score
+    func getFocusScorePerDayData(from sessions: [FocusSessionEntity]?) -> [FocusScoreMockData] {
+        var focusScoreData: [FocusScoreMockData] = []
+        
+        for session in (sessions ?? []) {
+            let sessionDate = Calendar.current.startOfDay(for: session.endTime ?? Date())
+            
+            if let index = focusScoreData.firstIndex(where: { $0.date == sessionDate }) {
+                focusScoreData[index].tasksOnDate += 1
+                focusScoreData[index].score += session.focusScore
+            } else {
+                let newData = FocusScoreMockData(taskName: session.task?.type,
+                                                 date: sessionDate,
+                                                 tasksOnDate: 1,
+                                                 score: session.focusScore)
+                focusScoreData.append(newData)
+            }
+        }
+        
+        return focusScoreData
+    }
 }
 
 
 extension StatsViewModel {
-    struct GraphMockData: Identifiable, Codable {
-        var id = UUID()
-        let date: Date
-        var completedTime: Double
-        var allotedTIme: Double
-    }
-    
-    struct FocusScoreMockData: Identifiable {
-        let id = UUID()
-        let taskName: String
-        let date: Date
-        let score: Double
-    }
-    
-    enum GraphPlotOptions: String, CaseIterable, Identifiable {
-        case day
-        case week
-        case month
-        
-        var id: String {
-            rawValue
-        }
-    }
-    
-    // MARK: New Structs actually being used
     struct StatsHeaderData {
         let timeFocusedToday: Int // In minutes
         let sessionsCompleted: Int
@@ -259,5 +244,31 @@ extension StatsViewModel {
         let title: String
         let completionPercent: Int
         let date: Date
+    }
+    
+    struct GraphMockData: Identifiable, Codable {
+        var id = UUID()
+        let date: Date
+        var completedTime: Double
+        var allotedTIme: Double
+    }
+    
+    enum GraphPlotOptions: String, CaseIterable, Identifiable {
+        case day
+        case week
+        case month
+        
+        var id: String {
+            rawValue
+        }
+    }
+    
+    
+    struct FocusScoreMockData: Identifiable {
+        let id = UUID()
+        let taskName: String?
+        let date: Date
+        var tasksOnDate: Int
+        var score: Double
     }
 }
