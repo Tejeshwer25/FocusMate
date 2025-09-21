@@ -20,3 +20,9 @@ A timer kind of app that allows user to enter time in minuted, for which they ne
 [Progress View](https://github.com/user-attachments/assets/3c23c7ac-0274-438b-b17a-8d161fb0afb8)
 
 [Alert View](https://github.com/user-attachments/assets/5a86996c-7539-4194-8b2a-ac6a70023034)
+
+[App Demo](https://github.com/user-attachments/assets/5697ea0e-e1b7-4687-9f04-5c8b337e9267)
+
+
+
+
