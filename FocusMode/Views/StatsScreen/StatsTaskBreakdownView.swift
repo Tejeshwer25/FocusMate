@@ -70,7 +70,7 @@ struct StatsTaskBreakdownView: View {
                 HStack {
                     Text(session.title)
                     Spacer()
-                    Text("\(session.completionPercent)%")
+                    Text("\(session.completionPercent, specifier: "%.2f")%")
                 }
             }
             .padding(.horizontal)
@@ -84,6 +84,6 @@ struct StatsTaskBreakdownView: View {
 
 #Preview {
     let vm = StatsViewModel()
-    let mock = vm.getTaskBreakdownData()
+    let mock = vm.getGroupedSessions(from: [])
     StatsTaskBreakdownView(tasks: mock)
 }

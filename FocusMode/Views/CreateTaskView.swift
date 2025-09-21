@@ -180,5 +180,5 @@ struct CreateTaskView: View {
 }
 
 #Preview {
-    CreateTaskView(navPath: .constant([.creteTask]))
+    CreateTaskView(navPath: .constant([.createTask]))
 }

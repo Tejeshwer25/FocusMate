@@ -6,6 +6,6 @@
 //
 
 enum NavigationLinkType: Hashable {
-    case creteTask
+    case createTask
     case focusMode(UserTaskModel)
 }

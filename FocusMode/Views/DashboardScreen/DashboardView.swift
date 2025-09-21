@@ -74,7 +74,7 @@ struct DashboardView: View {
             .navigationTitle("FocusMate")
             .navigationDestination(for: NavigationLinkType.self) { value in
                 switch value {
-                case .creteTask:
+                case .createTask:
                     CreateTaskView(navPath: $path)
                 case .focusMode(let userTaskModel):
                     FocusModeView(userTask: userTaskModel)
@@ -106,7 +106,7 @@ struct DashboardView: View {
             .padding(.top)
             
             Button {
-                self.path.append(NavigationLinkType.creteTask)
+                self.path.append(NavigationLinkType.createTask)
             } label: {
                 Text("Create New Task")
                     .padding()

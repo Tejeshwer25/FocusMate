@@ -5,7 +5,7 @@
 //  Created by Tejeshwer Singh on 11/09/25.
 //
 
-import SwiftUICore
+import SwiftUI
 
 extension Color {
     static let focusMatePrimary = Color("AppPrimary")             // Can be used for buttons and other primary code
