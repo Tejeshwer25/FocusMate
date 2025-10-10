@@ -1,5 +1,78 @@
-# FocusMate
-A timer kind of app that allows user to enter time in minuted, for which they need to focus on a task. Once done user will be redirected to a screen with time progress and will be notified through a chime whenever timer finishes. 
+# 📱 FocusMate
+
+FocusMate is an iOS app designed to help users manage their tasks, track productivity, and analyze focus trends over time. The app combines a **task manager**, **focus session tracker**, and **stats dashboard** into one seamless experience.  
+
+---
+
+## 🚀 Features  
+
+### ✅ Task Management  
+- Add new tasks with an allotted time.  
+- Mark tasks as **completed** or **abandoned**.  
+- Simple dashboard UI for managing active sessions.  
+
+### 📊 Stats & Analytics  
+- **Focus Score** (per session, daily, weekly, monthly) based on `timeCompleted ÷ timeAlloted`.  
+- **Line chart** showing focus score trend over time.  
+- **Bar chart** comparing time allotted vs. time completed.  
+- Tap on any day in the chart to view tasks from that day.  
+
+### 🎯 Productivity Insights *(in-progress)*  
+- Current session’s focus score.  
+- Average daily and weekly focus score.  
+- Suggestions to improve focus score (planned).  
+
+---
+
+## 🛠️ Tech Stack  
+
+- **Language:** Swift 6  
+- **Frameworks:**  
+  - **SwiftUI** for UI  
+  - **Swift Charts** for graphs & visualizations  
+  - **Core Data** for task/session persistence  
+- **Design:** Custom fonts & UI themes (upcoming)  
+
+---
+
+## 🗂️ Project Structure  
+
+- `DashboardView` → Add/manage tasks, run sessions.  
+- `StatsView` → Charts, focus score, daily breakdown.  
+- `StatsViewModel` → Data aggregation (per-day/week/month).  
+- `FocusSessionEntity` → Core Data model for sessions.  
+
+---
+
+## 📈 Roadmap  
+
+- [x] Add and complete tasks  
+- [x] Dashboard UI  
+- [x] Stats screen with charts  
+- [ ] Calculate and persist focus score  
+- [ ] Show task list for selected day in stats  
+- [ ] Background task handling  
+- [ ] Streaks (daily consistency tracking)  
+- [ ] Productivity insights based on focus score trends  
+
+---
+
+## 🤝 Contribution  
+
+Contributions, issues, and feature requests are welcome!  
+Feel free to open a pull request or raise an issue.  
+
+---
+
+## 📄 License  
+
+This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.  
+
+---
+
+⚡ *FocusMode helps you stay consistent, analyze your habits, and build better focus over time.*  
+
+---
 
 ## Screenshots
 <table>
