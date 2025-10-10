@@ -157,14 +157,24 @@ class StatsViewModel: ObservableObject {
             
             if let index = focusScoreData.firstIndex(where: { $0.date == sessionDate }) {
                 focusScoreData[index].tasksOnDate += 1
-                focusScoreData[index].score += session.focusScore
+                focusScoreData[index].meanScore += session.durationAlloted * session.focusScore
+                focusScoreData[index].meanTimeAlloted += session.durationAlloted
             } else {
                 let newData = FocusScoreMockData(taskName: session.task?.type,
                                                  date: sessionDate,
                                                  tasksOnDate: 1,
-                                                 score: session.focusScore)
+                                                 score: 0,
+                                                 meanScore: session.durationAlloted * session.focusScore,
+                                                 meanTimeAlloted: session.durationAlloted)
                 focusScoreData.append(newData)
             }
+        }
+        
+        for index in 0..<focusScoreData.count {
+            let session = focusScoreData[index]
+            let score = session.meanScore / session.meanTimeAlloted
+            
+            focusScoreData[index].score = score
         }
         
         return focusScoreData
@@ -252,5 +262,7 @@ extension StatsViewModel {
         let date: Date
         var tasksOnDate: Int
         var score: Double
+        var meanScore: Double
+        var meanTimeAlloted: Double
     }
 }

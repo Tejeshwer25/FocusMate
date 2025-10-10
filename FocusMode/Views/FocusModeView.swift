@@ -195,7 +195,7 @@ struct FocusModeView: View {
         session.durationCompleted = self.userTask.timeCompleted
         session.startTime = Date()
         session.endTime = Date()
-        session.focusScore = 0
+        session.focusScore = self.userTask.timeCompleted / self.userTask.timeAlloted
         
         task?.addToSessions(session)
         
