@@ -86,9 +86,9 @@ struct StatsFocusScoreSection: View {
             }
             
             HStack {
-                Text("Time: ")
+                Text("Focus Score: ")
                 Spacer()
-                Text("8hrs")
+                Text("\(self.getFocusScoreForDate(date: selectedDate ?? Date()))")
             }
         }
         .padding()
@@ -117,6 +117,19 @@ struct StatsFocusScoreSection: View {
         } else {
             return self.taskFocusScore
         }
+    }
+    
+    /// Method to get focus score for selected date on chart
+    /// - Parameter date: Date selected on chart
+    /// - Returns: Focus score for the specified date
+    func getFocusScoreForDate(date: Date) -> Double {
+        for session in self.taskFocusScore {
+            if Calendar.current.isDate(session.date, inSameDayAs: date) {
+                return session.score
+            }
+        }
+        
+        return 0
     }
 }
 

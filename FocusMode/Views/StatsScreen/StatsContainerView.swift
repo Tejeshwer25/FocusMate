@@ -28,14 +28,17 @@ struct StatsContainerView: View {
             List {
                 StatsHeader(statsHeaderData: self.viewModel.getDataForHeader(from: latestTasks.map({$0})))
                 
-                StatTimeDedicatedSection(selectedRange: $timeDedicatedGraphMode,
-                                         sessionActivities: self.viewModel.getTimeFocused(for: StatsViewModel.GraphPlotOptions(rawValue: self.timeDedicatedGraphMode) ?? .week, from: self.sessionsCreated))
-                
-                if (self.sessionsCreated?.count ?? 0) >= 5 {
-                    StatsFocusScoreSection(taskFocusScore: self.viewModel.getFocusScorePerDayData(from: self.sessionsCreated))
+                if self.sessionsCreated != nil
+                    && self.sessionsCreated?.isEmpty == false {
+                    StatTimeDedicatedSection(selectedRange: $timeDedicatedGraphMode,
+                                             sessionActivities: self.viewModel.getTimeFocused(for: StatsViewModel.GraphPlotOptions(rawValue: self.timeDedicatedGraphMode) ?? .week, from: self.sessionsCreated))
+                    
+                    if (self.sessionsCreated?.count ?? 0) <= 5 {
+                        StatsFocusScoreSection(taskFocusScore: self.viewModel.getFocusScorePerDayData(from: self.sessionsCreated))
+                    }
+                    
+                    StatsTaskBreakdownView(tasks: self.viewModel.getGroupedSessions(from: self.sessionsCreated))
                 }
-                
-                StatsTaskBreakdownView(tasks: self.viewModel.getGroupedSessions(from: self.sessionsCreated))
             }
             .navigationTitle("Stats")
         }
