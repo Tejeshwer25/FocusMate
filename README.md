@@ -49,7 +49,7 @@ FocusMate is an iOS app designed to help users manage their tasks, track product
 - [x] Add and complete tasks  
 - [x] Dashboard UI  
 - [x] Stats screen with charts  
-- [ ] Calculate and persist focus score  
+- [x] Calculate and persist focus score  
 - [ ] Show task list for selected day in stats  
 - [ ] Background task handling  
 - [ ] Streaks (daily consistency tracking)  
