@@ -83,4 +83,15 @@ class DashboardViewModel: ObservableObject {
         }
         return result
     }
+    
+    /// Method to get time string from session time property
+    /// - Parameter seconds: time in float
+    /// - Returns: time in representable format
+    func getReadableTime(from seconds: CGFloat) -> String {
+        let secondsDouble = Double(seconds)
+        let time = self.convertSecondsToRequiredTime(seconds: secondsDouble)
+        let timeString = self.getReadableStringFromTime(time: time)
+        
+        return timeString
+    }
 }

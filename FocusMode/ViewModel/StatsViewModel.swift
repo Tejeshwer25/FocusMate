@@ -9,7 +9,7 @@ import Foundation
 
 typealias SessionsCompletedAndAbandonedCount = (sessionsCompleted: Int, sessionsAbandoned: Int)
 
-class StatsViewModel: ObservableObject {    
+class StatsViewModel: ObservableObject {
     /// Method to get data for header section
     /// - Parameter from: focus session entity containing all data
     /// - Returns: Data for stats header view
@@ -203,6 +203,17 @@ class StatsViewModel: ObservableObject {
         }
         
         return groupedSessions
+    }
+    
+    /// Method to check if charts are required to be shown or not
+    /// - Parameter sessions: session list
+    /// - Returns: whether to show charts or not
+    func shouldShowCharts(for sessions: [FocusSessionEntity]?) -> Bool {
+        if sessions == nil || sessions?.isEmpty == true {
+            return false
+        }
+        
+        return true
     }
 }
 

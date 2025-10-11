@@ -34,6 +34,8 @@ struct CreateTaskView: View {
     @State private var alertType: AppErrors?
     @State private var userTask: UserTaskModel?
     
+    let viewModel = CreateTaskViewModel()
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 25) {
@@ -133,12 +135,15 @@ struct CreateTaskView: View {
         withAnimation {
             self.showAlert = false
         }
-
-        guard self.validateUserInputs() else {
+        
+        let userInputValidationState = self.viewModel.validateUserInputs(taskName: self.taskName, taskDuration: self.focusTime)
+        
+        if !userInputValidationState.status {
+            self.alertType = userInputValidationState.alertType
+            
             withAnimation {
                 self.showAlert = true
             }
-            return
         }
         
         if let focusTime = Float(time) {
@@ -152,29 +157,6 @@ struct CreateTaskView: View {
             }
         } else {
             self.showAlert.toggle()
-        }
-    }
-    
-    /// Method to validate user input
-    /// - Returns: Has user entered correct input
-    func validateUserInputs() -> Bool {
-        let taskName = self.taskName
-        if !taskName.isEmpty {
-            let taskDuration = self.focusTime
-            if !taskDuration.isEmpty {
-                if let duration = Float(taskDuration), duration > 0 {
-                    return true
-                } else {
-                    self.alertType = .taskDurationInvalid
-                    return false
-                }
-            } else {
-                self.alertType = .taskDurationEmpty
-                return false
-            }
-        } else {
-            self.alertType = .taskNameEmpty
-            return false
         }
     }
 }
