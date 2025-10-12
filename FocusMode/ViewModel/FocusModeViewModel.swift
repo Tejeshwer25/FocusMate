@@ -28,21 +28,21 @@ class FocusModeViewModel: ObservableObject {
     
     /// Method to initialize state on view appearance
     func initializeTimeRemaining() {
-        self.timeRemaining = self.userTask.timeAlloted
+        self.timeRemaining = self.userTask.timeAllotted
     }
     
     /// Method to update timer on each second
     func updateProgress() {
-        let timeAlloted   = self.userTask.timeAlloted
+        let timeAllotted   = self.userTask.timeAllotted
         
         self.timeRemaining -= 1
         if self.timeRemaining >= 0 {
-            let progress = (timeAlloted - self.timeRemaining) / timeAlloted
-            self.userTask.timeCompleted = timeAlloted - self.timeRemaining
+            let progress = (timeAllotted - self.timeRemaining) / timeAllotted
+            self.userTask.timeCompleted = timeAllotted - self.timeRemaining
             self.progress = progress
         } else {
             self.showOverlay = true
-            self.userTask.timeCompleted = self.userTask.timeAlloted
+            self.userTask.timeCompleted = self.userTask.timeAllotted
             AudioServicesPlayAlertSound(SystemSoundID(1004))
         }
     }
@@ -69,11 +69,11 @@ class FocusModeViewModel: ObservableObject {
         let session = FocusSessionEntity(context: context)
         session.id = UUID()
         session.name = self.userTask.taskName
-        session.durationAlloted = self.userTask.timeAlloted
+        session.durationAllotted = self.userTask.timeAllotted
         session.durationCompleted = self.userTask.timeCompleted
         session.startTime = Date()
         session.endTime = Date()
-        session.focusScore = self.userTask.timeCompleted / self.userTask.timeAlloted
+        session.focusScore = self.userTask.timeCompleted / self.userTask.timeAllotted
         
         task?.addToSessions(session)
         

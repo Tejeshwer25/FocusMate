@@ -150,7 +150,7 @@ struct CreateTaskView: View {
             let time = CGFloat(focusTime) * 60
             self.userTask = UserTaskModel(taskName: self.taskName,
                                           type: self.taskType,
-                                          timeAlloted: time)
+                                          timeAllotted: time)
             
             if let userTask = self.userTask {
                 self.navPath = [.focusMode(userTask)]

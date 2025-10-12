@@ -55,20 +55,20 @@ struct UserTaskModel: Codable, Hashable, Identifiable {
     let id: UUID
     let taskName: String
     let type: TaskType
-    let timeAlloted: CGFloat
+    let timeAllotted: CGFloat
     var timeCompleted: CGFloat
     let wasCompleted: Bool
     
     init(id: UUID = UUID(),
          taskName: String,
          type: TaskType,
-         timeAlloted: CGFloat,
+         timeAllotted: CGFloat,
          timeCompleted: CGFloat = 0,
          wasCompleted: Bool = false) {
         self.id = id
         self.taskName = taskName
         self.type = type
-        self.timeAlloted = timeAlloted
+        self.timeAllotted = timeAllotted
         self.timeCompleted = timeCompleted
         self.wasCompleted = wasCompleted
     }

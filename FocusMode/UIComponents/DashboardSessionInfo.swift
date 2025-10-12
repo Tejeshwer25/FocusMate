@@ -18,12 +18,12 @@ struct DashboardSessionInfo: View {
             
             Spacer()
             
-            Text("\(self.viewModel.getReadableTime(from: sessioninfo.timeCompleted)) / \(self.viewModel.getReadableTime(from: sessioninfo.timeAlloted))")
+            Text("\(self.viewModel.getReadableTime(from: sessioninfo.timeCompleted)) / \(self.viewModel.getReadableTime(from: sessioninfo.timeAllotted))")
         }
     }
 }
 
 #Preview {
-    let userTaskModel = UserTaskModel(taskName: "Test", type: .chores, timeAlloted: 40.0)
+    let userTaskModel = UserTaskModel(taskName: "Test", type: .chores, timeAllotted: 40.0)
     DashboardSessionInfo(sessioninfo: userTaskModel, viewModel: DashboardViewModel())
 }

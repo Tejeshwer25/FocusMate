@@ -10,6 +10,8 @@ import Foundation
 typealias SessionsCompletedAndAbandonedCount = (sessionsCompleted: Int, sessionsAbandoned: Int)
 
 class StatsViewModel: ObservableObject {
+    @Published var timeDedicatedGraphMode: String = GraphPlotOptions.week.rawValue
+    
     /// Method to get data for header section
     /// - Parameter from: focus session entity containing all data
     /// - Returns: Data for stats header view
@@ -18,7 +20,7 @@ class StatsViewModel: ObservableObject {
         let sessionsCompletedAndAbandonedCount = self.getSessionsCompletedAndAbandonedData(from: allSessions)
         let userStreak = self.getUserStreak(from: allSessions)
         
-        let data = StatsHeaderData(timeFocusedToday: Int(timeFocusedToday),
+        let data = StatsHeaderData(timeFocusedToday: timeFocusedToday,
                                    sessionsCompleted: sessionsCompletedAndAbandonedCount.sessionsCompleted,
                                    sessionsAbandoned: sessionsCompletedAndAbandonedCount.sessionsAbandoned,
                                    currentStreak: userStreak)
@@ -50,9 +52,9 @@ class StatsViewModel: ObservableObject {
     func getSessionsCompletedAndAbandonedData(from sessions: [FocusSessionEntity]) -> SessionsCompletedAndAbandonedCount {
         return sessions.reduce(SessionsCompletedAndAbandonedCount(0,0)) { partialResult, session in
             let durationCompleted = session.durationCompleted
-            let durationAlloted = session.durationAlloted
+            let durationAllotted = session.durationAllotted
             
-            if durationAlloted < durationCompleted {
+            if durationAllotted < durationCompleted {
                 return (sessionsCompleted: partialResult.sessionsCompleted + 1,
                         sessionsAbandoned: partialResult.sessionsAbandoned)
             } else {
@@ -102,11 +104,11 @@ class StatsViewModel: ObservableObject {
     ///   - duration: range for which to calculate durationg
     ///   - sessions: sessions data
     /// - Returns: plottable data
-    func getTimeFocused(for duration: GraphPlotOptions,
-                        from sessions: [FocusSessionEntity]?) -> [GraphMockData] {
+    func getTimeFocused(from sessions: [FocusSessionEntity]?) -> [GraphMockData] {
         var timeFocusedData = [GraphMockData]()
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
+        let duration = GraphPlotOptions(rawValue: self.timeDedicatedGraphMode) ?? .week
         
         func isInRange(_ date: Date) -> Bool {
             switch duration {
@@ -133,12 +135,12 @@ class StatsViewModel: ObservableObject {
             
             if let index = timeFocusedData.firstIndex(where: { $0.date == sessionDate }) {
                 timeFocusedData[index].completedTime += session.durationCompleted
-                timeFocusedData[index].allotedTIme += session.durationAlloted
+                timeFocusedData[index].allottedTime += session.durationAllotted
             } else {
                 timeFocusedData.append(.init(
                     date: sessionDate,
                     completedTime: session.durationCompleted,
-                    allotedTIme: session.durationAlloted
+                    allottedTime: session.durationAllotted
                 ))
             }
         }
@@ -157,22 +159,22 @@ class StatsViewModel: ObservableObject {
             
             if let index = focusScoreData.firstIndex(where: { $0.date == sessionDate }) {
                 focusScoreData[index].tasksOnDate += 1
-                focusScoreData[index].meanScore += session.durationAlloted * session.focusScore
-                focusScoreData[index].meanTimeAlloted += session.durationAlloted
+                focusScoreData[index].meanScore += session.durationAllotted * session.focusScore
+                focusScoreData[index].meanTimeAllotted += session.durationAllotted
             } else {
                 let newData = FocusScoreMockData(taskName: session.task?.type,
                                                  date: sessionDate,
                                                  tasksOnDate: 1,
                                                  score: 0,
-                                                 meanScore: session.durationAlloted * session.focusScore,
-                                                 meanTimeAlloted: session.durationAlloted)
+                                                 meanScore: session.durationAllotted * session.focusScore,
+                                                 meanTimeAllotted: session.durationAllotted)
                 focusScoreData.append(newData)
             }
         }
         
         for index in 0..<focusScoreData.count {
             let session = focusScoreData[index]
-            let score = session.meanScore / session.meanTimeAlloted
+            let score = session.meanScore / session.meanTimeAllotted
             
             focusScoreData[index].score = score
         }
@@ -187,7 +189,7 @@ class StatsViewModel: ObservableObject {
         var groupedSessions = [TaskBreakdown]()
         
         for session in (sessions ?? []) {
-            let completionPercent = (session.durationCompleted / session.durationAlloted) * 100
+            let completionPercent = (session.durationCompleted / session.durationAllotted) * 100
             let currentSession = Session(title: session.name ?? "n/a",
                                          completionPercent: completionPercent,
                                          date: session.endTime ?? Date())
@@ -220,7 +222,7 @@ class StatsViewModel: ObservableObject {
 
 extension StatsViewModel {
     struct StatsHeaderData {
-        let timeFocusedToday: Int // In minutes
+        let timeFocusedToday: Double // In minutes
         let sessionsCompleted: Int
         let sessionsAbandoned: Int
         let currentStreak: Int
@@ -253,7 +255,7 @@ extension StatsViewModel {
         var id = UUID()
         let date: Date
         var completedTime: Double
-        var allotedTIme: Double
+        var allottedTime: Double
     }
     
     enum GraphPlotOptions: String, CaseIterable, Identifiable {
@@ -274,6 +276,6 @@ extension StatsViewModel {
         var tasksOnDate: Int
         var score: Double
         var meanScore: Double
-        var meanTimeAlloted: Double
+        var meanTimeAllotted: Double
     }
 }

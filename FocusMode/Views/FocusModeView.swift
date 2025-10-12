@@ -140,6 +140,6 @@ struct FocusModeView: View {
 }
 
 #Preview {
-    let userTask = UserTaskModel(taskName: "", type: .chores, timeAlloted: 10000)
+    let userTask = UserTaskModel(taskName: "", type: .chores, timeAllotted: 10000)
     FocusModeView(userTask: userTask)
 }
