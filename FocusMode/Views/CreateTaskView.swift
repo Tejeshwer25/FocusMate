@@ -25,14 +25,13 @@ enum AppErrors: Error {
 }
 
 struct CreateTaskView: View {
-    @Binding var navPath: [NavigationLinkType]
-    
     @State private var focusTime    = ""
     @State private var showAlert    = false
     @State private var taskName     = ""
     @State private var taskType     = TaskType.chores
     @State private var alertType: AppErrors?
     @State private var userTask: UserTaskModel?
+    @State private var navigateToFocus = false
     
     let viewModel = CreateTaskViewModel()
     
@@ -126,6 +125,11 @@ struct CreateTaskView: View {
             .padding(.top, 25)
             .padding(.horizontal)
             .navigationTitle("Create new task")
+            .navigationDestination(isPresented: $navigateToFocus) {
+                if let userTask {
+                    FocusModeView(userTask: userTask)
+                }
+            }
         }
     }
     
@@ -140,10 +144,13 @@ struct CreateTaskView: View {
         
         if !userInputValidationState.status {
             self.alertType = userInputValidationState.alertType
+            self.navigateToFocus = false
             
             withAnimation {
                 self.showAlert = true
             }
+            
+            return
         }
         
         if let focusTime = Float(time) {
@@ -153,14 +160,16 @@ struct CreateTaskView: View {
                                           timeAllotted: time)
             
             if let userTask = self.userTask {
-                self.navPath = [.focusMode(userTask)]
+                self.userTask = userTask
+                self.navigateToFocus = true
             }
         } else {
             self.showAlert.toggle()
+            self.navigateToFocus = false
         }
     }
 }
 
 #Preview {
-    CreateTaskView(navPath: .constant([.createTask]))
+    CreateTaskView()
 }

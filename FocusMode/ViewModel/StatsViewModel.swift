@@ -54,7 +54,7 @@ class StatsViewModel: ObservableObject {
             let durationCompleted = session.durationCompleted
             let durationAllotted = session.durationAllotted
             
-            if durationAllotted < durationCompleted {
+            if durationAllotted <= durationCompleted {
                 return (sessionsCompleted: partialResult.sessionsCompleted + 1,
                         sessionsAbandoned: partialResult.sessionsAbandoned)
             } else {

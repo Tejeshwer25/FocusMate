@@ -9,7 +9,6 @@ import SwiftUI
 
 struct DashboardView: View {
     let viewModel = DashboardViewModel()
-    @State private var path = [NavigationLinkType]()
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \FocusSessionEntity.startTime, ascending: false)],
         animation: .default
@@ -25,7 +24,7 @@ struct DashboardView: View {
     ) private var todaysTasks: FetchedResults<FocusSessionEntity>
     
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack {
             List {
                 Section {
                     headerView
@@ -72,14 +71,6 @@ struct DashboardView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("FocusMate")
-            .navigationDestination(for: NavigationLinkType.self) { value in
-                switch value {
-                case .createTask:
-                    CreateTaskView(navPath: $path)
-                case .focusMode(let userTaskModel):
-                    FocusModeView(userTask: userTaskModel)
-                }
-            }
         }
     }
     
@@ -105,8 +96,8 @@ struct DashboardView: View {
             .padding()
             .padding(.top)
             
-            Button {
-                self.path.append(NavigationLinkType.createTask)
+            NavigationLink {
+                CreateTaskView()
             } label: {
                 Text("Create New Task")
                     .padding()
@@ -118,7 +109,6 @@ struct DashboardView: View {
                     )
                     .padding()
             }
-            .frame(maxWidth: .infinity)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .background {
