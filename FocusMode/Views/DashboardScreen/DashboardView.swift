@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct DashboardView: View {
-    let viewModel = DashboardViewModel()
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \FocusSessionEntity.startTime, ascending: false)],
         animation: .default
@@ -22,6 +21,8 @@ struct DashboardView: View {
         ),
         animation: .default
     ) private var todaysTasks: FetchedResults<FocusSessionEntity>
+    
+    let viewModel = DashboardViewModel()
     
     var body: some View {
         NavigationStack {

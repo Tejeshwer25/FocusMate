@@ -50,14 +50,15 @@ struct StatTimeDedicatedSection: View {
                                 y: .value("Hours", session.allottedTime),
                                 stacking: .unstacked
                             )
-                            .foregroundStyle(.blue)
+                            .foregroundStyle(Color.gray.opacity(0.5))
+                            .cornerRadius(10)
                             
                             BarMark(
                                 x: .value("Date", session.date, unit: .day),
                                 y: .value("Hours", session.completedTime),
                                 stacking: .unstacked
                             )
-                            .foregroundStyle(.green)
+                            .foregroundStyle(Color.green)
                         }
                         
                         if let selectedDate {

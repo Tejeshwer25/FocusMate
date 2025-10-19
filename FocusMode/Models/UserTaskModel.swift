@@ -12,7 +12,6 @@ enum TaskType: String, CaseIterable, Codable {
     case chores
     case exercise
     case work
-    case rest
     case learning
     case creative
     
@@ -24,8 +23,6 @@ enum TaskType: String, CaseIterable, Codable {
             return "Excercises"
         case .work:
             return "Work"
-        case .rest:
-            return "Rest"
         case .learning:
             return "Learning"
         case .creative:
@@ -41,8 +38,6 @@ enum TaskType: String, CaseIterable, Codable {
             return "🏋️‍♂️"
         case .work:
             return "💼"
-        case .rest:
-            return "😴"
         case .learning:
             return "📚"
         case .creative:

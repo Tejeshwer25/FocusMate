@@ -14,6 +14,7 @@ struct FocusModeView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.managedObjectContext) private var context
+    @EnvironmentObject private var notificationManager: NotificationManager
 
     @State var userTask: UserTaskModel
     @StateObject private var viewModel: FocusModeViewModel
@@ -124,14 +125,15 @@ struct FocusModeView: View {
         }
         .onChange(of: self.scenePhase, { oldValue, newPhase in
             if newPhase == .background {
-                let isUnlocked = UIApplication.shared.isProtectedDataAvailable
-                if isUnlocked {
-                    sessionCancelled = true
-                    timerConnection?.cancel()
+                Task {
+                    do {
+                        try await self.notificationManager.sendUserNotifications(identifier: "sessionProgressAppInactive",
+                                                                             title: "Focus Session in Progress",
+                                                                             message: "Your focus session is still active. Please return to the Focus screen within 5 minutes to continue. If the app remains inactive or is closed, the session will be cancelled.")
+                    } catch {
+                        print(error.localizedDescription)
+                    }
                 }
-            }
-            if newPhase == .active && sessionCancelled {
-                sessionCancellationAlert = true
             }
         })
         .toolbarVisibility(.hidden, for: .navigationBar)

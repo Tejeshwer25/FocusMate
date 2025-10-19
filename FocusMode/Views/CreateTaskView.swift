@@ -7,23 +7,6 @@
 
 import SwiftUI
 
-enum AppErrors: Error {
-    case taskNameEmpty
-    case taskDurationEmpty
-    case taskDurationInvalid
-    
-    var alertMessage: String {
-        switch self {
-        case .taskDurationEmpty:
-            return "Task duration cannot be empty"
-        case .taskDurationInvalid:
-            return "Task duration should be greater than 0"
-        case .taskNameEmpty:
-            return "Task name cannot be empty"
-        }
-    }
-}
-
 struct CreateTaskView: View {
     @State private var focusTime    = ""
     @State private var showAlert    = false
@@ -70,7 +53,7 @@ struct CreateTaskView: View {
                     
                     Picker("Task Type", selection: $taskType) {
                         ForEach(TaskType.allCases, id: \.self) { type in
-                            Text(type.getTaskName())
+                            Text(type.getTaskName() + " " + type.getEmojiForType())
                         }
                     }
                     .pickerStyle(.menu)
