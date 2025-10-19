@@ -15,13 +15,13 @@ struct StatTimeDedicatedSection: View {
     private var selectedDate: Date? {
         return chartSelectedDate
     }
-    private var timeAlloted: Int? {
+    private var timeAllotted: Double {
         let session = sessionActivities.first(where: { Calendar.current.isDate($0.date, inSameDayAs: selectedDate ?? Date())})
-        return Int(session?.allotedTIme ?? 0)
+        return session?.allottedTime ?? 0.0
     }
-    private var timeCompleted: Int? {
+    private var timeCompleted: Double {
         let session = sessionActivities.first(where: { Calendar.current.isDate($0.date, inSameDayAs: selectedDate ?? Date())})
-        return Int(session?.completedTime ?? 0)
+        return session?.completedTime ?? 0.0
     }
     let sessionActivities: [StatsViewModel.GraphMockData]
     
@@ -47,17 +47,18 @@ struct StatTimeDedicatedSection: View {
                         ForEach(sessionActivities) { session in
                             BarMark(
                                 x: .value("Date", session.date, unit: .day),
-                                y: .value("Hours", session.allotedTIme),
+                                y: .value("Hours", session.allottedTime),
                                 stacking: .unstacked
                             )
-                            .foregroundStyle(.blue)
+                            .foregroundStyle(Color.gray.opacity(0.5))
+                            .cornerRadius(10)
                             
                             BarMark(
                                 x: .value("Date", session.date, unit: .day),
                                 y: .value("Hours", session.completedTime),
                                 stacking: .unstacked
                             )
-                            .foregroundStyle(.green)
+                            .foregroundStyle(Color.green)
                         }
                         
                         if let selectedDate {
@@ -90,23 +91,41 @@ struct StatTimeDedicatedSection: View {
             }
             
             HStack {
-                Text("Time Alloted: ")
+                Text("Time Allotted: ")
                 Spacer()
-                Text("\(timeAlloted ?? -1) hrs")
+                Text("\(self.getTimeAllottedStringForUI())")
             }
             
             HStack {
                 Text("Time Completed: ")
                 Spacer()
-                Text("\(timeCompleted ?? -1) hrs")
+                Text("\(self.getTimeCompletedStringForUI())")
             }
         }
-        .padding()
-        .background(Color.appBackground)
+        .font(.footnote)
+        .padding(5)
+        .background {
+            RoundedRectangle(cornerRadius: 8)
+                .foregroundStyle(Color.appBackground.opacity(0.8))
+        }
         .overlay {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(Color.appTextSecondary)
         }
+    }
+    
+    /// Method to get allotted time to be displayed on UI
+    /// - Returns: time allotted
+    func getTimeAllottedStringForUI() -> String {
+        let timeAllotted = FormatUtil.convertSecondsToRequiredTime(seconds: self.timeAllotted)
+        return FormatUtil.getReadableStringFromTime(time: timeAllotted)
+    }
+    
+    /// Method to get completed time to be displayed on UI
+    /// - Returns: time completed
+    func getTimeCompletedStringForUI() -> String {
+        let timeCompleted = FormatUtil.convertSecondsToRequiredTime(seconds: self.timeCompleted)
+        return FormatUtil.getReadableStringFromTime(time: timeCompleted)
     }
 }
 
@@ -114,5 +133,5 @@ struct StatTimeDedicatedSection: View {
     let vm = StatsViewModel()
     
     StatTimeDedicatedSection(selectedRange: .constant(StatsViewModel.GraphPlotOptions.week.rawValue),
-                             sessionActivities: vm.getTimeFocused(for: .week, from: []))
+                             sessionActivities: vm.getTimeFocused(from: []))
 }

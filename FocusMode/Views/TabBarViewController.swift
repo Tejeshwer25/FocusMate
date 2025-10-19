@@ -18,6 +18,7 @@ struct TabBarViewController: View {
                 StatsContainerView()
             }
         }
+        .tint(Color.green)
     }
 }
 

@@ -18,23 +18,12 @@ struct DashboardSessionInfo: View {
             
             Spacer()
             
-            Text("\(self.getReadableTime(from: sessioninfo.timeCompleted)) / \(self.getReadableTime(from: sessioninfo.timeAlloted))")
+            Text("\(self.viewModel.getReadableTime(from: sessioninfo.timeCompleted)) / \(self.viewModel.getReadableTime(from: sessioninfo.timeAllotted))")
         }
-    }
-    
-    /// Method to get time string from session time property
-    /// - Parameter seconds: time in float
-    /// - Returns: time in representable format
-    func getReadableTime(from seconds: CGFloat) -> String {
-        let secondsDouble = Double(seconds)
-        let time = self.viewModel.convertSecondsToRequiredTime(seconds: secondsDouble)
-        let timeString = self.viewModel.getReadableStringFromTime(time: time)
-        
-        return timeString
     }
 }
 
 #Preview {
-    let userTaskModel = UserTaskModel(taskName: "Test", type: .chores, timeAlloted: 40.0)
+    let userTaskModel = UserTaskModel(taskName: "Test", type: .chores, timeAllotted: 40.0)
     DashboardSessionInfo(sessioninfo: userTaskModel, viewModel: DashboardViewModel())
 }

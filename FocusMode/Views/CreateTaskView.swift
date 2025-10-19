@@ -7,32 +7,16 @@
 
 import SwiftUI
 
-enum AppErrors: Error {
-    case taskNameEmpty
-    case taskDurationEmpty
-    case taskDurationInvalid
-    
-    var alertMessage: String {
-        switch self {
-        case .taskDurationEmpty:
-            return "Task duration cannot be empty"
-        case .taskDurationInvalid:
-            return "Task duration should be greater than 0"
-        case .taskNameEmpty:
-            return "Task name cannot be empty"
-        }
-    }
-}
-
 struct CreateTaskView: View {
-    @Binding var navPath: [NavigationLinkType]
-    
     @State private var focusTime    = ""
     @State private var showAlert    = false
     @State private var taskName     = ""
     @State private var taskType     = TaskType.chores
     @State private var alertType: AppErrors?
     @State private var userTask: UserTaskModel?
+    @State private var navigateToFocus = false
+    
+    let viewModel = CreateTaskViewModel()
     
     var body: some View {
         ScrollView {
@@ -69,7 +53,7 @@ struct CreateTaskView: View {
                     
                     Picker("Task Type", selection: $taskType) {
                         ForEach(TaskType.allCases, id: \.self) { type in
-                            Text(type.getTaskName())
+                            Text(type.getTaskName() + " " + type.getEmojiForType())
                         }
                     }
                     .pickerStyle(.menu)
@@ -124,6 +108,11 @@ struct CreateTaskView: View {
             .padding(.top, 25)
             .padding(.horizontal)
             .navigationTitle("Create new task")
+            .navigationDestination(isPresented: $navigateToFocus) {
+                if let userTask {
+                    FocusModeView(userTask: userTask)
+                }
+            }
         }
     }
     
@@ -133,11 +122,17 @@ struct CreateTaskView: View {
         withAnimation {
             self.showAlert = false
         }
-
-        guard self.validateUserInputs() else {
+        
+        let userInputValidationState = self.viewModel.validateUserInputs(taskName: self.taskName, taskDuration: self.focusTime)
+        
+        if !userInputValidationState.status {
+            self.alertType = userInputValidationState.alertType
+            self.navigateToFocus = false
+            
             withAnimation {
                 self.showAlert = true
             }
+            
             return
         }
         
@@ -145,40 +140,19 @@ struct CreateTaskView: View {
             let time = CGFloat(focusTime) * 60
             self.userTask = UserTaskModel(taskName: self.taskName,
                                           type: self.taskType,
-                                          timeAlloted: time)
+                                          timeAllotted: time)
             
             if let userTask = self.userTask {
-                self.navPath = [.focusMode(userTask)]
+                self.userTask = userTask
+                self.navigateToFocus = true
             }
         } else {
             self.showAlert.toggle()
-        }
-    }
-    
-    /// Method to validate user input
-    /// - Returns: Has user entered correct input
-    func validateUserInputs() -> Bool {
-        let taskName = self.taskName
-        if !taskName.isEmpty {
-            let taskDuration = self.focusTime
-            if !taskDuration.isEmpty {
-                if let duration = Float(taskDuration), duration > 0 {
-                    return true
-                } else {
-                    self.alertType = .taskDurationInvalid
-                    return false
-                }
-            } else {
-                self.alertType = .taskDurationEmpty
-                return false
-            }
-        } else {
-            self.alertType = .taskNameEmpty
-            return false
+            self.navigateToFocus = false
         }
     }
 }
 
 #Preview {
-    CreateTaskView(navPath: .constant([.createTask]))
+    CreateTaskView()
 }

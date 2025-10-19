@@ -92,7 +92,10 @@ struct StatsFocusScoreSection: View {
             }
         }
         .padding()
-        .background(Color.appBackground)
+        .background{
+            RoundedRectangle(cornerRadius: 8)
+                .foregroundStyle(Color.appBackground.opacity(0.8))
+        }
         .overlay {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(Color.appTextSecondary)

@@ -14,22 +14,21 @@ struct FocusModeView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.managedObjectContext) private var context
+    @EnvironmentObject private var notificationManager: NotificationManager
 
-    
     @State var userTask: UserTaskModel
-    @State private var showOverlay = false
-    @State private var progress: CGFloat = 0.0
-    @State private var timeRemaining: CGFloat = 0.0 {
-        didSet {
-            self.timeRemainingString = self.getTimeRemainingString()
-        }
-    }
-    @State private var timeRemainingString: String = ""
+    @StateObject private var viewModel: FocusModeViewModel
+    
     @State private var timerConnection: Cancellable?
     @State private var sessionCancelled = false
     @State private var sessionCancellationAlert = false
     
     let timer = Timer.publish(every: 1, on: .main, in: .common)
+    
+    init(userTask: UserTaskModel) {
+        _userTask = State(initialValue: userTask)
+        _viewModel = StateObject(wrappedValue: FocusModeViewModel(userTask: userTask))
+    }
     
     var body: some View {
         VStack(spacing: 25) {
@@ -39,7 +38,7 @@ struct FocusModeView: View {
             Text("Focus mode active")
                 .font(.title)
             
-            ProgressView(progress: $progress, timeRemaining: $timeRemainingString)
+            ProgressView(progress: $viewModel.progress, timeRemaining: $viewModel.timeRemainingString)
                 .frame(width: 200, height: 200)
             
             Spacer()
@@ -56,7 +55,7 @@ struct FocusModeView: View {
             .padding(.horizontal, 20)
             
             Button {
-                self.saveFocusSessionToCoreData()
+                self.viewModel.saveFocusSessionToCoreData(context: self.context)
                 dismiss()
             } label: {
                 Text("Abandon Task")
@@ -75,7 +74,7 @@ struct FocusModeView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay {
-            if self.showOverlay {
+            if self.viewModel.showOverlay {
                 ZStack {
                     Color(uiColor: .secondarySystemBackground)
                         .opacity(0.75)
@@ -90,7 +89,7 @@ struct FocusModeView: View {
                             .frame(width: 50, height: 50)
                         Text("Timer Up")
                         Button {
-                            self.saveFocusSessionToCoreData()
+                            self.viewModel.saveFocusSessionToCoreData(context: self.context)
                             dismiss()
                         } label: {
                             Text("Go to Home")
@@ -108,106 +107,41 @@ struct FocusModeView: View {
         }
         .alert("Session Cancelled", isPresented: $sessionCancellationAlert) {
                     Button("OK", role: .cancel) {
-                        self.saveFocusSessionToCoreData()
+                        self.viewModel.saveFocusSessionToCoreData(context: self.context)
                         dismiss()
                     }
         } message: {
             Text("Your focus session was cancelled because the app was moved to background.")
         }
         .onAppear {
-            self.initializeTimeRemaining()
+            self.viewModel.initializeTimeRemaining()
             self.timerConnection = self.timer.connect()
         }
         .onDisappear {
             self.timerConnection?.cancel()
         }
         .onReceive(timer) { _ in
-            self.updateProgress()
+            self.viewModel.updateProgress()
         }
         .onChange(of: self.scenePhase, { oldValue, newPhase in
             if newPhase == .background {
-                let isUnlocked = UIApplication.shared.isProtectedDataAvailable
-                if isUnlocked {
-                    sessionCancelled = true
-                    timerConnection?.cancel()
+                Task {
+                    do {
+                        try await self.notificationManager.sendUserNotifications(identifier: "sessionProgressAppInactive",
+                                                                             title: "Focus Session in Progress",
+                                                                             message: "Your focus session is still active. Please return to the Focus screen within 5 minutes to continue. If the app remains inactive or is closed, the session will be cancelled.")
+                    } catch {
+                        print(error.localizedDescription)
+                    }
                 }
-            }
-            if newPhase == .active && sessionCancelled {
-                sessionCancellationAlert = true
             }
         })
         .toolbarVisibility(.hidden, for: .navigationBar)
         .toolbarVisibility(.hidden, for: .tabBar)
     }
-    
-    /// Method to initialize state on view appearance
-    func initializeTimeRemaining() {
-        self.timeRemaining = self.userTask.timeAlloted
-    }
-    
-    /// Method to update timer on each second
-    func updateProgress() {
-        let timeAlloted   = self.userTask.timeAlloted
-        
-        self.timeRemaining -= 1
-        if self.timeRemaining >= 0 {
-            let progress = (timeAlloted - self.timeRemaining) / timeAlloted
-            self.userTask.timeCompleted = timeAlloted - self.timeRemaining
-            self.progress = progress
-        } else {
-            self.showOverlay = true
-            self.userTask.timeCompleted = self.userTask.timeAlloted
-            AudioServicesPlayAlertSound(SystemSoundID(1004))
-        }
-    }
-    
-    /// Method to get time remaining in `mm:ss` format
-    /// - Returns: time remaining in string `mm:ss` format
-    func getTimeRemainingString() -> String {
-        let seconds = self.timeRemaining
-        let minutes = seconds / 60
-        let remainingSeconds = seconds.truncatingRemainder(dividingBy: 60)
-        return String(format: "%.0fm:%.0fs", floor(minutes), remainingSeconds)
-    }
-    
-    /// Method to save current session to core data
-    func saveFocusSessionToCoreData() {
-        var task: TaskEntity?
-        let taskRequest = TaskEntity.fetchRequest() as NSFetchRequest<TaskEntity>
-        let requestPredicate = NSPredicate(format: "type == %@", self.userTask.type.rawValue)
-        taskRequest.predicate = requestPredicate
-        
-        do {
-            task = try context.fetch(taskRequest).first
-        } catch {}
-        
-        if task == nil {
-            task = TaskEntity(context: self.context)
-            task?.id = UUID()
-            task?.type = self.userTask.type.rawValue
-            task?.createdAt = Date()
-        }
-        
-        let session = FocusSessionEntity(context: self.context)
-        session.id = UUID()
-        session.name = self.userTask.taskName
-        session.durationAlloted = self.userTask.timeAlloted
-        session.durationCompleted = self.userTask.timeCompleted
-        session.startTime = Date()
-        session.endTime = Date()
-        session.focusScore = self.userTask.timeCompleted / self.userTask.timeAlloted
-        
-        task?.addToSessions(session)
-        
-        do {
-            try self.context.save()
-        } catch {
-            print("Error while saving focus session \(error.localizedDescription)")
-        }
-    }
 }
 
 #Preview {
-    let userTask = UserTaskModel(taskName: "", type: .chores, timeAlloted: 1000)
+    let userTask = UserTaskModel(taskName: "", type: .chores, timeAllotted: 10000)
     FocusModeView(userTask: userTask)
 }

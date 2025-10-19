@@ -12,7 +12,6 @@ enum TaskType: String, CaseIterable, Codable {
     case chores
     case exercise
     case work
-    case rest
     case learning
     case creative
     
@@ -24,8 +23,6 @@ enum TaskType: String, CaseIterable, Codable {
             return "Excercises"
         case .work:
             return "Work"
-        case .rest:
-            return "Rest"
         case .learning:
             return "Learning"
         case .creative:
@@ -41,8 +38,6 @@ enum TaskType: String, CaseIterable, Codable {
             return "🏋️‍♂️"
         case .work:
             return "💼"
-        case .rest:
-            return "😴"
         case .learning:
             return "📚"
         case .creative:
@@ -55,20 +50,20 @@ struct UserTaskModel: Codable, Hashable, Identifiable {
     let id: UUID
     let taskName: String
     let type: TaskType
-    let timeAlloted: CGFloat
+    let timeAllotted: CGFloat
     var timeCompleted: CGFloat
     let wasCompleted: Bool
     
     init(id: UUID = UUID(),
          taskName: String,
          type: TaskType,
-         timeAlloted: CGFloat,
+         timeAllotted: CGFloat,
          timeCompleted: CGFloat = 0,
          wasCompleted: Bool = false) {
         self.id = id
         self.taskName = taskName
         self.type = type
-        self.timeAlloted = timeAlloted
+        self.timeAllotted = timeAllotted
         self.timeCompleted = timeCompleted
         self.wasCompleted = wasCompleted
     }

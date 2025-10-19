@@ -15,7 +15,7 @@ struct StatsHeader: View {
             HStack {
                 Text("Time focused today: ")
                 Spacer()
-                Text("\(self.statsHeaderData.timeFocusedToday)hr")
+                Text("\(self.getTimeFocusedTodayForUI())")
             }
             
             HStack {
@@ -36,6 +36,13 @@ struct StatsHeader: View {
                 Text("\(self.statsHeaderData.currentStreak) Days")
             }
         }
+    }
+    
+    /// Method to get time focused today in representable string for UI
+    /// - Returns: time focused today
+    func getTimeFocusedTodayForUI() -> String {
+        let timeFocusedToday = FormatUtil.convertSecondsToRequiredTime(seconds: Double(self.statsHeaderData.timeFocusedToday))
+        return FormatUtil.getReadableStringFromTime(time: timeFocusedToday)
     }
 }
 
