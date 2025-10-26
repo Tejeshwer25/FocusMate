@@ -27,8 +27,12 @@ class FocusModeViewModel: ObservableObject {
     }
     
     /// Method to initialize state on view appearance
-    func initializeTimeRemaining() {
-        self.timeRemaining = self.userTask.timeAllotted
+    func initializeTimeRemaining(timeRemaining: CGFloat? = nil) {
+        if let timeRemaining {
+            self.timeRemaining = timeRemaining
+        } else {
+            self.timeRemaining = self.userTask.timeAllotted
+        }
     }
     
     /// Method to update timer on each second
@@ -49,39 +53,54 @@ class FocusModeViewModel: ObservableObject {
     
     
     /// Method to save current session to core data
-    func saveFocusSessionToCoreData(context: NSManagedObjectContext) {
-        var task: TaskEntity?
-        let taskRequest = TaskEntity.fetchRequest() as NSFetchRequest<TaskEntity>
-        let requestPredicate = NSPredicate(format: "type == %@", self.userTask.type.rawValue)
-        taskRequest.predicate = requestPredicate
-        
+    func saveFocusSessionToCoreData(context: NSManagedObjectContext, finalize: Bool = false) {
         do {
-            task = try context.fetch(taskRequest).first
-        } catch {}
-        
-        if task == nil {
-            task = TaskEntity(context: context)
-            task?.id = UUID()
-            task?.type = self.userTask.type.rawValue
-            task?.createdAt = Date()
-        }
-        
-        let session = FocusSessionEntity(context: context)
-        session.id = UUID()
-        session.name = self.userTask.taskName
-        session.durationAllotted = self.userTask.timeAllotted
-        session.durationCompleted = self.userTask.timeCompleted
-        session.startTime = Date()
-        session.endTime = Date()
-        session.focusScore = self.userTask.timeCompleted / self.userTask.timeAllotted
-        
-        task?.addToSessions(session)
-        
-        do {
+            // Fetch task
+            let taskRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
+            taskRequest.predicate = NSPredicate(format: "type == %@", self.userTask.type.rawValue)
+            let task = try context.fetch(taskRequest).first ?? {
+                let newTask = TaskEntity(context: context)
+                newTask.id = UUID()
+                newTask.type = self.userTask.type.rawValue
+                newTask.createdAt = Date()
+                return newTask
+            }()
+            
+            // Fetch session
+            let sessionRequest: NSFetchRequest<FocusSessionEntity> = FocusSessionEntity.fetchRequest()
+            sessionRequest.predicate = NSPredicate(format: "id == %@", self.userTask.id as CVarArg)
+            let sessionToSave = try context.fetch(sessionRequest).first ?? FocusSessionEntity(context: context)
+            
+            // Update properties
+            sessionToSave.id = self.userTask.id
+            sessionToSave.name = self.userTask.taskName
+            sessionToSave.durationAllotted = self.userTask.timeAllotted
+            sessionToSave.durationCompleted = self.userTask.timeCompleted
+            
+            if sessionToSave.startTime == nil {
+                sessionToSave.startTime = Date()
+            }
+            if finalize {
+                sessionToSave.endTime = Date()
+            }
+            
+            if sessionToSave.task == nil {
+                task.addToSessions(sessionToSave)
+            }
+            
+            sessionToSave.focusScore = self.userTask.timeAllotted > 0 ? (self.userTask.timeCompleted / self.userTask.timeAllotted) : 0
+            
+            // Save context
             try context.save()
+            print("Saved/updated session info")
         } catch {
-            print("Error while saving focus session \(error.localizedDescription)")
+            print("Error while saving focus session: \(error.localizedDescription)")
         }
+    }
+    
+    /// Finalize and save the focus session (used when user abandons or completes)
+    func finalizeAndSaveSession(context: NSManagedObjectContext) {
+        self.saveFocusSessionToCoreData(context: context, finalize: true)
     }
     
     /// Method to get time remaining in `mm:ss` format
@@ -92,4 +111,45 @@ class FocusModeViewModel: ObservableObject {
         let remainingSeconds = seconds.truncatingRemainder(dividingBy: 60)
         return String(format: "%.0fm:%.0fs", floor(minutes), remainingSeconds)
     }
+    
+    /// Method to get uncompleted saved session if user resumes the app in specified time range
+    /// - Parameters:
+    ///   - id: session id
+    ///   - context: core data context
+    /// - Returns: Task to be resumed
+    func getSavedUncompletedSavedSession(for id: UUID, context: NSManagedObjectContext) throws -> UserTaskModel? {
+        let fetchRequest = FocusSessionEntity.fetchRequest() as NSFetchRequest<FocusSessionEntity>
+        // Assuming FocusSessionEntity.id is UUID
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        // fetchRequest.fetchLimit = 1
+
+        do {
+            guard let result = try context.fetch(fetchRequest).first else {
+                return nil
+            }
+
+            guard let sessionID = result.id,
+                  let name = result.name
+            else {
+                return nil
+            }
+
+            // Safely derive type; default to .chores if relationship or type is missing
+            let derivedType = TaskType(rawValue: result.task?.type ?? TaskType.chores.rawValue) ?? .chores
+
+            let userTaskModel = UserTaskModel(
+                id: sessionID,
+                taskName: name,
+                type: derivedType,
+                timeAllotted: result.durationAllotted,
+                timeCompleted: result.durationCompleted,
+                wasCompleted: false
+            )
+            return userTaskModel
+        } catch {
+            print(error.localizedDescription)
+            throw error
+        }
+    }
 }
+

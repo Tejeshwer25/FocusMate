@@ -124,15 +124,29 @@ struct FocusModeView: View {
             self.viewModel.updateProgress()
         }
         .onChange(of: self.scenePhase, { oldValue, newPhase in
+            /// On change of scenefrom active to background save the current session and send a notification to user.
+            /// Once the scene is back to active then fetch the session and check for difference if it is within range then resume the session
             if newPhase == .background {
                 Task {
                     do {
+                        self.viewModel.saveFocusSessionToCoreData(context: self.context)
                         try await self.notificationManager.sendUserNotifications(identifier: "sessionProgressAppInactive",
                                                                              title: "Focus Session in Progress",
                                                                              message: "Your focus session is still active. Please return to the Focus screen within 5 minutes to continue. If the app remains inactive or is closed, the session will be cancelled.")
                     } catch {
                         print(error.localizedDescription)
                     }
+                }
+            } else if newPhase == .active && (oldValue == .background || oldValue == .inactive) {
+                do {
+                    let userTask = try self.viewModel.getSavedUncompletedSavedSession(for: self.viewModel.userTask.id,
+                                                                                      context: self.context)
+                    
+                    let timeRemaining = (userTask?.timeAllotted ?? 0) - (userTask?.timeCompleted ?? 0)
+                    self.viewModel.initializeTimeRemaining(timeRemaining: timeRemaining)
+                    self.timerConnection = self.timer.connect()
+                } catch {
+                    print(error.localizedDescription)
                 }
             }
         })
