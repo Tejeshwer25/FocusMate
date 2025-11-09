@@ -1,26 +1,32 @@
-# 📱 FocusMate
+# 📱 FocusMate  
 
-FocusMate is an iOS app designed to help users manage their tasks, track productivity, and analyze focus trends over time. The app combines a **task manager**, **focus session tracker**, and **stats dashboard** into one seamless experience.  
+FocusMate is a modern iOS productivity app that helps users **stay focused, manage tasks, and visualize their progress** — all in one place. It combines a **task manager**, **focus timer**, and **insightful analytics dashboard** into a cohesive experience designed to build better habits and consistency.  
 
 ---
 
 ## 🚀 Features  
 
+### 🎯 Focus Sessions  
+- Start **focus sessions** with allotted time and live progress tracking.  
+- Real-time progress updates with **Dynamic Island Live Activities** and **Lock Screen widgets**.  
+- Automatic handling of app backgrounding — reminders to return or resume sessions.  
+- Abandon sessions anytime, with all data safely persisted in Core Data.  
+
 ### ✅ Task Management  
-- Add new tasks with an allotted time.  
-- Mark tasks as **completed** or **abandoned**.  
-- Simple dashboard UI for managing active sessions.  
+- Create tasks with custom titles, categories, and time goals.  
+- Mark tasks as **completed**, **in progress**, or **abandoned**.  
+- Smart dashboard UI to view, manage, and track ongoing tasks.  
 
 ### 📊 Stats & Analytics  
-- **Focus Score** (per session, daily, weekly, monthly) based on `timeCompleted ÷ timeAlloted`.  
-- **Line chart** showing focus score trend over time.  
-- **Bar chart** comparing time allotted vs. time completed.  
-- Tap on any day in the chart to view tasks from that day.  
+- **Focus Score** calculated as `timeCompleted ÷ timeAllotted` (per session/day/week/month).  
+- **Line Chart**: Visualize focus trends over time with Swift Charts.  
+- **Bar Chart**: Compare allotted vs. completed time.  
+- Tap any day in the chart to view the list of tasks from that day.  
 
-### 🎯 Productivity Insights *(in-progress)*  
-- Current session’s focus score.  
-- Average daily and weekly focus score.  
-- Suggestions to improve focus score (planned).  
+### 💡 Productivity Insights *(upcoming)*  
+- Real-time focus performance summary.  
+- Average daily and weekly focus scores.  
+- Personalized insights and improvement suggestions based on patterns.  
 
 ---
 
@@ -28,74 +34,83 @@ FocusMate is an iOS app designed to help users manage their tasks, track product
 
 - **Language:** Swift 6  
 - **Frameworks:**  
-  - **SwiftUI** for UI  
-  - **Swift Charts** for graphs & visualizations  
-  - **Core Data** for task/session persistence  
-- **Design:** Custom fonts & UI themes (upcoming)  
+  - 🧠 **SwiftUI** – Declarative, state-driven UI  
+  - 📊 **Swift Charts** – Interactive data visualizations  
+  - 💾 **Core Data** – Persistent task and session storage  
+  - 🔔 **ActivityKit** – Dynamic Island & Live Activity updates  
+  - 🕐 **UserNotifications** – Background session reminders  
 
 ---
 
-## 🗂️ Project Structure  
+## 🗂️ Project Architecture  
 
-- `DashboardView` → Add/manage tasks, run sessions.  
-- `StatsView` → Charts, focus score, daily breakdown.  
-- `StatsViewModel` → Data aggregation (per-day/week/month).  
-- `FocusSessionEntity` → Core Data model for sessions.  
+| Layer | Responsibility |
+|-------|----------------|
+| `FocusModeView` | Runs active focus sessions with live progress updates. |
+| `DashboardView` | Task creation, management, and navigation to active sessions. |
+| `StatsView` | Displays analytics and focus trends using Swift Charts. |
+| `StatsViewModel` | Aggregates and filters data by day/week/month. |
+| `FocusSessionEntity` | Core Data model for sessions and completion metrics. |
 
 ---
 
 ## 📈 Roadmap  
 
-- [x] Add and complete tasks  
-- [x] Dashboard UI  
-- [x] Stats screen with charts  
-- [x] Calculate and persist focus score  
-- [ ] Show task list for selected day in stats  
-- [ ] Background task handling  
-- [ ] Streaks (daily consistency tracking)  
-- [ ] Productivity insights based on focus score trends  
+- [x] Task creation, completion, and abandonment  
+- [x] Core Data persistence  
+- [x] Swift Charts analytics  
+- [x] Focus Score calculation  
+- [x] Dynamic Island Live Activity integration  
+- [x] Background reminders using notifications  
+- [ ] Show tasks for a selected day in Stats  
+- [ ] Streak tracking (daily consistency)  
+- [ ] Focus insights & personalized feedback  
+- [ ] iCloud sync for data persistence across devices  
+
+---
+
+## 🎨 Design  
+
+- Minimal, distraction-free UI inspired by focus-oriented design principles.  
+- Adaptive light and dark mode support.  
+- Planned: Custom themes and typography settings.  
 
 ---
 
 ## 🤝 Contribution  
 
-Contributions, issues, and feature requests are welcome!  
-Feel free to open a pull request or raise an issue.  
+Contributions, feedback, and feature ideas are always welcome!  
+Submit an issue or open a pull request to help improve FocusMate.  
 
 ---
 
 ## 📄 License  
 
-This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.  
+This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.  
 
 ---
 
-⚡ *FocusMode helps you stay consistent, analyze your habits, and build better focus over time.*  
+## 📸 Screenshots  
 
----
-
-## Screenshots
 <table>
   <tr>
     <td align="center">
-    <img width="301" height="655" alt="Simulator Screenshot - iPhone 16 Pro - 2025-08-15 at 00 56 08" src="https://github.com/user-attachments/assets/29f37adc-72a6-452b-a43d-fe29a4caf964" />
+      <img width="301" height="655" alt="Progress View" src="https://github.com/user-attachments/assets/29f37adc-72a6-452b-a43d-fe29a4caf964" />
       <br />
-      <sub>Light Mode Progress View</sub>
+      <sub>🕒 Focus Progress View</sub>
     </td>
     <td align="center">
-      <img width="301" height="655" alt="Simulator Screenshot - iPhone 16 Pro - 2025-08-15 at 00 56 15" src="https://github.com/user-attachments/assets/2f978eb8-e466-402e-96a9-c48883093fa6" />
+      <img width="301" height="655" alt="Alert View" src="https://github.com/user-attachments/assets/2f978eb8-e466-402e-96a9-c48883093fa6" />
       <br />
-      <sub>Light Mode Alert View</sub>
+      <sub>🚨 Focus Session Alert</sub>
     </td>
   </tr>
 </table>
 
-[Progress View](https://github.com/user-attachments/assets/3c23c7ac-0274-438b-b17a-8d161fb0afb8)
+🎥 [App Demo](https://github.com/user-attachments/assets/5697ea0e-e1b7-4687-9f04-5c8b337e9267)  
+📊 [Progress View](https://github.com/user-attachments/assets/3c23c7ac-0274-438b-b17a-8d161fb0afb8)  
+🔔 [Alert View](https://github.com/user-attachments/assets/5a86996c-7539-4194-8b2a-ac6a70023034)  
 
-[Alert View](https://github.com/user-attachments/assets/5a86996c-7539-4194-8b2a-ac6a70023034)
+---
 
-[App Demo](https://github.com/user-attachments/assets/5697ea0e-e1b7-4687-9f04-5c8b337e9267)
-
-
-
-
+⚡ *FocusMate helps you stay consistent, track your progress, and build sustainable focus habits over time.*
