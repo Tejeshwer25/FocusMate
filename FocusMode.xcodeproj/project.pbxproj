@@ -8,14 +8,54 @@
 
 /* Begin PBXBuildFile section */
 		A47EE6A32E631EDA002A2FD2 /* FocusModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A47EE6A12E631EDA002A2FD2 /* FocusModel.xcdatamodeld */; };
+		A48ADDA32EC0C95800AB97DA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A48ADDA22EC0C95800AB97DA /* WidgetKit.framework */; };
+		A48ADDA52EC0C95800AB97DA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A48ADDA42EC0C95800AB97DA /* SwiftUI.framework */; };
+		A48ADDB62EC0C95900AB97DA /* FocusModeWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A48ADDA02EC0C95800AB97DA /* FocusModeWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A48ADDBD2EC0D76900AB97DA /* FocusModeWidgetAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48ADDBC2EC0D76200AB97DA /* FocusModeWidgetAttributes.swift */; };
+		A48ADDBE2EC0D79400AB97DA /* FocusModeWidgetAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48ADDBC2EC0D76200AB97DA /* FocusModeWidgetAttributes.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A48ADDB42EC0C95900AB97DA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A48819052E4D43E900A29271 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A48ADD9F2EC0C95800AB97DA;
+			remoteInfo = FocusModeWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A48ADDB72EC0C95900AB97DA /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A48ADDB62EC0C95900AB97DA /* FocusModeWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		A47EE6A22E631EDA002A2FD2 /* FocusModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FocusModel.xcdatamodel; sourceTree = "<group>"; };
 		A488190D2E4D43E900A29271 /* FocusMode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FocusMode.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A48ADDA02EC0C95800AB97DA /* FocusModeWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FocusModeWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		A48ADDA22EC0C95800AB97DA /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		A48ADDA42EC0C95800AB97DA /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		A48ADDBC2EC0D76200AB97DA /* FocusModeWidgetAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusModeWidgetAttributes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A48ADDBB2EC0C95900AB97DA /* Exceptions for "FocusModeWidget" folder in "FocusModeWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = A48ADD9F2EC0C95800AB97DA /* FocusModeWidgetExtension */;
+		};
 		A4BE11002E53DD8B00F67C29 /* Exceptions for "FocusMode" folder in "FocusMode" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -34,6 +74,14 @@
 			path = FocusMode;
 			sourceTree = "<group>";
 		};
+		A48ADDA62EC0C95800AB97DA /* FocusModeWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A48ADDBB2EC0C95900AB97DA /* Exceptions for "FocusModeWidget" folder in "FocusModeWidgetExtension" target */,
+			);
+			path = FocusModeWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,14 +92,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A48ADD9D2EC0C95800AB97DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A48ADDA52EC0C95800AB97DA /* SwiftUI.framework in Frameworks */,
+				A48ADDA32EC0C95800AB97DA /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		A48819042E4D43E900A29271 = {
 			isa = PBXGroup;
 			children = (
+				A48ADDBC2EC0D76200AB97DA /* FocusModeWidgetAttributes.swift */,
 				A47EE6A12E631EDA002A2FD2 /* FocusModel.xcdatamodeld */,
 				A488190F2E4D43E900A29271 /* FocusMode */,
+				A48ADDA62EC0C95800AB97DA /* FocusModeWidget */,
+				A48ADDA12EC0C95800AB97DA /* Frameworks */,
 				A488190E2E4D43E900A29271 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -60,8 +120,18 @@
 			isa = PBXGroup;
 			children = (
 				A488190D2E4D43E900A29271 /* FocusMode.app */,
+				A48ADDA02EC0C95800AB97DA /* FocusModeWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A48ADDA12EC0C95800AB97DA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A48ADDA22EC0C95800AB97DA /* WidgetKit.framework */,
+				A48ADDA42EC0C95800AB97DA /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,10 +144,12 @@
 				A48819092E4D43E900A29271 /* Sources */,
 				A488190A2E4D43E900A29271 /* Frameworks */,
 				A488190B2E4D43E900A29271 /* Resources */,
+				A48ADDB72EC0C95900AB97DA /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A48ADDB52EC0C95900AB97DA /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				A488190F2E4D43E900A29271 /* FocusMode */,
@@ -89,6 +161,28 @@
 			productReference = A488190D2E4D43E900A29271 /* FocusMode.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A48ADD9F2EC0C95800AB97DA /* FocusModeWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A48ADDBA2EC0C95900AB97DA /* Build configuration list for PBXNativeTarget "FocusModeWidgetExtension" */;
+			buildPhases = (
+				A48ADD9C2EC0C95800AB97DA /* Sources */,
+				A48ADD9D2EC0C95800AB97DA /* Frameworks */,
+				A48ADD9E2EC0C95800AB97DA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A48ADDA62EC0C95800AB97DA /* FocusModeWidget */,
+			);
+			name = FocusModeWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = FocusModeWidgetExtension;
+			productReference = A48ADDA02EC0C95800AB97DA /* FocusModeWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -96,11 +190,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1640;
+				LastSwiftUpdateCheck = 2610;
 				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					A488190C2E4D43E900A29271 = {
 						CreatedOnToolsVersion = 16.4;
+					};
+					A48ADD9F2EC0C95800AB97DA = {
+						CreatedOnToolsVersion = 26.1;
 					};
 				};
 			};
@@ -119,12 +216,20 @@
 			projectRoot = "";
 			targets = (
 				A488190C2E4D43E900A29271 /* FocusMode */,
+				A48ADD9F2EC0C95800AB97DA /* FocusModeWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		A488190B2E4D43E900A29271 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A48ADD9E2EC0C95800AB97DA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -139,10 +244,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				A47EE6A32E631EDA002A2FD2 /* FocusModel.xcdatamodeld in Sources */,
+				A48ADDBD2EC0D76900AB97DA /* FocusModeWidgetAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A48ADD9C2EC0C95800AB97DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A48ADDBE2EC0D79400AB97DA /* FocusModeWidgetAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A48ADDB52EC0C95900AB97DA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A48ADD9F2EC0C95800AB97DA /* FocusModeWidgetExtension */;
+			targetProxy = A48ADDB42EC0C95900AB97DA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A48819162E4D43EA00A29271 /* Debug */ = {
@@ -197,7 +319,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -254,7 +376,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -271,6 +393,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5W5CN7CQ9Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FocusMode/Info.plist;
@@ -279,6 +402,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -299,6 +423,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5W5CN7CQ9Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FocusMode/Info.plist;
@@ -307,6 +432,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -315,6 +441,68 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.tejeshwer.FocusMode;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A48ADDB82EC0C95900AB97DA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5W5CN7CQ9Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FocusModeWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FocusModeWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tejeshwer.FocusMode.FocusModeWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A48ADDB92EC0C95900AB97DA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5W5CN7CQ9Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FocusModeWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FocusModeWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tejeshwer.FocusMode.FocusModeWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -337,6 +525,15 @@
 			buildConfigurations = (
 				A48819192E4D43EA00A29271 /* Debug */,
 				A488191A2E4D43EA00A29271 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A48ADDBA2EC0C95900AB97DA /* Build configuration list for PBXNativeTarget "FocusModeWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A48ADDB82EC0C95900AB97DA /* Debug */,
+				A48ADDB92EC0C95900AB97DA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

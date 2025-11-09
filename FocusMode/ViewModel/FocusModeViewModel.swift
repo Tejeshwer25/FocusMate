@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import CoreData
 import AudioToolbox
+import ActivityKit
 
 class FocusModeViewModel: ObservableObject {
     var userTask: UserTaskModel
@@ -21,6 +22,7 @@ class FocusModeViewModel: ObservableObject {
             self.timeRemainingString = self.getTimeRemainingString()
         }
     }
+    @Published var currentActivity: Activity<FocusModeWidgetAttributes>? = nil
     
     init(userTask: UserTaskModel) {
         self.userTask = userTask

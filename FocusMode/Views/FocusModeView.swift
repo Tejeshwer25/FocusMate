@@ -9,6 +9,8 @@ import SwiftUI
 import Combine
 import AVFoundation
 import CoreData
+import ActivityKit
+import FocusModeWidgetExtension
 
 struct FocusModeView: View {
     @Environment(\.dismiss) private var dismiss
@@ -116,12 +118,41 @@ struct FocusModeView: View {
         .onAppear {
             self.viewModel.initializeTimeRemaining()
             self.timerConnection = self.timer.connect()
+            
+            if ActivityAuthorizationInfo().areActivitiesEnabled {
+                do {
+                    let adventure = FocusModeWidgetAttributes()
+                    let initialState = FocusModeWidgetAttributes.ContentState(
+                        timeRemaining: self.viewModel.timeRemainingString,
+                        focusState: .focus
+                    )
+                    
+                    let activity = try Activity.request(
+                        attributes: adventure,
+                        content: .init(state: initialState, staleDate: nil),
+                        pushType: nil
+                    )
+                    
+                    self.setupActivity(activity)
+                } catch {
+                    print("Unable to start live activity \(error.localizedDescription)")
+                }
+            }
         }
         .onDisappear {
             self.timerConnection?.cancel()
         }
         .onReceive(timer) { _ in
             self.viewModel.updateProgress()
+            
+            let updatedState = FocusModeWidgetAttributes.ContentState(
+                timeRemaining: self.viewModel.timeRemainingString,
+                focusState: .focus
+            )
+            
+            Task {
+                await self.viewModel.currentActivity?.update(ActivityContent(state: updatedState, staleDate: nil))
+            }
         }
         .onChange(of: self.scenePhase, { oldValue, newPhase in
             if newPhase == .background {
@@ -138,6 +169,12 @@ struct FocusModeView: View {
         })
         .toolbarVisibility(.hidden, for: .navigationBar)
         .toolbarVisibility(.hidden, for: .tabBar)
+    }
+    
+    /// Method to store reference to current activity
+    /// - Parameter activity: current activity generated
+    func setupActivity(_ activity: Activity<FocusModeWidgetAttributes>) {
+        self.viewModel.currentActivity = activity
     }
 }
 
